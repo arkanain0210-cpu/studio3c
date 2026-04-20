@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+/* 무한 루프 애니메이션 */
+@keyframes infinite-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* 왼쪽으로 흐르는 슬라이드 */
+.animate-infinite-scroll-left {
+  animation: infinite-scroll 60s linear infinite;
+}
+
+/* 오른쪽으로 흐르는 슬라이드 (릴스용) */
+.animate-infinite-scroll-right {
+  animation: infinite-scroll 60s linear infinite reverse;
+}
+
+/* 마우스 오버 시 일시정지 - 이 설정이 있어야 확실히 멈춥니다 */
+.pause-on-hover:hover .animate-infinite-scroll-left,
+.pause-on-hover:hover .animate-infinite-scroll-right {
+  animation-play-state: paused;
+}
