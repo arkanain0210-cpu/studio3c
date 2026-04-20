@@ -76,31 +76,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. 영상 섹션 */}
+      {/* --- 2. STUDIO 3C: 영상 포트폴리오 (드래그 가능 버전) --- */}
       <section id="studio3c" className="py-32 bg-black text-white overflow-hidden border-b border-zinc-900">
-        <div className="max-w-[1600px] mx-auto px-6 mb-16 border-l-2 border-white pl-6 text-left">
+        <div className="max-w-[1600px] mx-auto px-6 mb-16 border-l-2 border-white pl-6">
           <h3 className="text-3xl font-light tracking-widest uppercase font-serif italic">Studio 3C</h3>
           <p className="text-gray-500 text-[10px] tracking-[0.4em] mt-2 uppercase text-left">Selected Film & Shorts</p>
         </div>
 
-        <div className="relative flex overflow-hidden mb-12 h-[250px] md:h-[400px]">
-          <motion.div className="flex" animate={{ x: ["0%", "-50%"] }} transition={{ ease: "linear", duration: 40, repeat: Infinity }} whileHover={{ transition: { duration: 0 } }} style={{ width: "max-content" }}>
-            {dupLandscape.map((v, i) => (
-              <div key={`l-${i}`} onClick={() => setSelectedVideo(v.id)} className="px-4 cursor-pointer w-[400px] md:w-[600px]">
-                <div className="relative aspect-video bg-zinc-900 group shadow-2xl overflow-hidden">
-                  <Image src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt={v.title} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+        {/* 가로형 브랜드 필름 슬라이드 (드래그 가능) */}
+        <div className="relative flex overflow-hidden mb-12 h-[250px] md:h-[400px] cursor-grab active:cursor-grabbing">
+          <motion.div 
+            className="flex"
+            drag="x" // 가로 드래그 활성화
+            dragConstraints={{ left: -2000, right: 2000 }} // 드래그 범위 (데이터 양에 따라 조절)
+            dragElastic={0.1} // 끄트머리 탄성
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ ease: "linear", duration: 40, repeat: Infinity }}
+            whileHover={{ transition: { duration: 0 } }} // 마우스 올리면 자동 흐름 일시정지
+            style={{ width: "max-content" }}
+          >
+            {dupLandscape.map((video, idx) => (
+              <div 
+                key={`l-${idx}`} 
+                onClick={() => setSelectedVideo(video.id)} 
+                className="px-4 w-[400px] md:w-[600px] flex-shrink-0 pointer-events-none" // 이미지 클릭 방해 방지
+              >
+                <div className="relative aspect-video bg-zinc-900 overflow-hidden shadow-2xl group border border-white/5 pointer-events-auto">
+                  <Image src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`} alt={video.title} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </div>
             ))}
           </motion.div>
         </div>
 
-        <div className="relative flex overflow-hidden h-[320px] md:h-[500px]">
-          <motion.div className="flex" animate={{ x: ["-50%", "0%"] }} transition={{ ease: "linear", duration: 50, repeat: Infinity }} whileHover={{ transition: { duration: 0 } }} style={{ width: "max-content" }}>
-            {dupVertical.map((v, i) => (
-              <div key={`v-${i}`} onClick={() => setSelectedVideo(v.id)} className="px-3 cursor-pointer w-[180px] md:w-[280px]">
-                <div className="relative aspect-[9/16] bg-zinc-900 group shadow-2xl overflow-hidden">
-                  <Image src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt={v.title} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+        {/* 세로형 쇼츠 슬라이드 (드래그 가능) */}
+        <div className="relative flex overflow-hidden h-[320px] md:h-[500px] cursor-grab active:cursor-grabbing">
+          <motion.div 
+            className="flex"
+            drag="x"
+            dragConstraints={{ left: -2000, right: 2000 }}
+            dragElastic={0.1}
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ ease: "linear", duration: 50, repeat: Infinity }}
+            whileHover={{ transition: { duration: 0 } }}
+            style={{ width: "max-content" }}
+          >
+            {dupVertical.map((video, idx) => (
+              <div 
+                key={`v-${idx}`} 
+                onClick={() => setSelectedVideo(video.id)} 
+                className="px-3 w-[180px] md:w-[280px] flex-shrink-0 pointer-events-none"
+              >
+                <div className="relative aspect-[9/16] bg-zinc-900 overflow-hidden shadow-2xl group border border-white/5 pointer-events-auto">
+                  <Image src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`} alt={video.title} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </div>
             ))}
