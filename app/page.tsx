@@ -20,6 +20,8 @@ export default function Home() {
     { id: 'cfgI9f_MM48', title: '고기리막국수' },
     { id: 'se-_G2RsqKc', title: '방방곳곳이케아' },
     { id: '31vNtId47-c', title: '번호사형' },
+    { id: 'wZiXlcM5W5Y', title: 'M/V 강현기-멜로우' },
+    { id: 'GD4sJe7LPqk', title: 'M/V 김효민-짐 밖은 위험해' }
   ];
 
   const verticalVideos: VideoItem[] = [
