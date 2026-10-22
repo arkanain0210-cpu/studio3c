@@ -24,7 +24,7 @@
 - 콘티 사이트: https://yiimjoon.github.io/answer-prequel-conti/
     - 편별 페이지: `/ep1/index.html` ~ `/ep4/index.html` (= 전체 4~7편)
     - 컷 참고 그림: `/epN/images/<컷ID>.jpg` (예: `/ep1/images/S01-SH01d.jpg`)
-- 원본 대본 이미지: `../assets/original_scripts/` (수정1·수정2 버전, 4장)
+- 원본 대본 이미지: `../assets/original_scripts/` — `ep1_script_rev1.png`(연예인과 사업하기 수정1), `ep2_script_rev1.png`(설득의 기술 수정1), `ep3_script_rev1.png`(콘텐츠의 힘 수정1), `ep4_script_rev2.png`(식품 전문가를 구했더니 수정2)
 - 영상 폴더: https://drive.google.com/drive/folders/1RC5tKaDYHVPY2mWis9a0Jq9giMo01uSQ
 
 | 파일 | 드라이브 ID |
