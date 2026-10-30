@@ -1,10 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { isValidSessionId, listGalleryFiles, publicUrl, type GalleryFile } from '@/lib/gallery';
+import {
+  RETENTION_DAYS,
+  isGalleryExpired,
+  isValidSessionId,
+  listGalleryFiles,
+  publicUrl,
+  type GalleryFile,
+} from '@/lib/gallery';
 
 const POLL_MS = 2500;
 const POLL_FOR_MS = 20 * 60 * 1000; // 인화·업로드가 늦어져도 20분까지는 기다립니다
+
+function keepUntil(files: GalleryFile[]) {
+  const until = new Date(new Date(files[0].created_at).getTime() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
+  return until.toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+  });
+}
 
 function fileName(id: string, index: number) {
   return `studio3c-${id}-${index + 1}.jpg`;
@@ -42,6 +59,7 @@ export default function Gallery({ id }: { id: string }) {
   const valid = isValidSessionId(id);
   const [files, setFiles] = useState<GalleryFile[]>([]);
   const [timedOut, setTimedOut] = useState(false);
+  const [expired, setExpired] = useState(false);
   const [saving, setSaving] = useState<number | 'all' | null>(null);
 
   useEffect(() => {
@@ -50,10 +68,21 @@ export default function Gallery({ id }: { id: string }) {
     let timer: ReturnType<typeof setTimeout>;
     const startedAt = Date.now();
 
+    let checkedExpired = false;
     const poll = async () => {
       try {
         const next = await listGalleryFiles(id);
-        if (!stopped) setFiles((prev) => (prev.length === next.length ? prev : next));
+        if (stopped) return;
+        setFiles((prev) => (prev.length === next.length ? prev : next));
+        // 처음 열었을 때 사진이 없으면, 보관 기간이 지나 삭제된 링크인지 한 번 확인합니다
+        if (next.length === 0 && !checkedExpired) {
+          const gone = await isGalleryExpired(id);
+          checkedExpired = true;
+          if (gone) {
+            if (!stopped) setExpired(true);
+            return;
+          }
+        }
       } catch {
         // 네트워크가 잠깐 끊겨도 다음 주기에 다시 시도합니다
       }
@@ -93,7 +122,13 @@ export default function Gallery({ id }: { id: string }) {
           <p className="mt-16 text-center text-zinc-600">잘못된 링크예요. 현장 스태프에게 QR을 다시 요청해 주세요.</p>
         ) : files.length === 0 ? (
           <div className="mt-16 flex flex-col items-center text-center">
-            {timedOut ? (
+            {expired ? (
+              <p className="leading-relaxed text-zinc-600">
+                보관 기간({RETENTION_DAYS}일)이 지나 사진이 삭제되었어요.
+                <br />
+                이용해 주셔서 감사합니다.
+              </p>
+            ) : timedOut ? (
               <p className="text-zinc-600">아직 사진이 올라오지 않았어요.<br />현장 스태프에게 문의해 주세요.</p>
             ) : (
               <>
@@ -109,6 +144,9 @@ export default function Gallery({ id }: { id: string }) {
           <>
             <h1 className="mt-6 text-center text-xl font-semibold">사진이 도착했어요</h1>
             <p className="mt-1 text-center text-sm text-zinc-600">버튼을 누르거나 사진을 길게 눌러 저장하세요</p>
+            <p className="mt-3 rounded-lg bg-amber-100 px-4 py-2.5 text-center text-sm text-amber-900">
+              사진은 <strong>{keepUntil(files)}</strong>까지 보관돼요. 그 전에 꼭 저장해 주세요.
+            </p>
 
             {files.length > 1 && (
               <button
