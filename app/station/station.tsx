@@ -158,9 +158,17 @@ export default function Station() {
     return () => data.subscription.unsubscribe();
   }, [supabase, restoreStation]);
 
+  // 업로드가 끝난 기록만 지웁니다. 아직 올라가는 중인 사진은 계속 올라갑니다.
+  const clearHistory = () => {
+    itemsRef.current = itemsRef.current.filter((it) => it.status !== 'done');
+    setItems(itemsRef.current.map((it) => ({ ...it })));
+  };
+
+  // 테스트 후 실제 행사를 시작할 때: 번호를 1번으로 되돌리고 기록도 비웁니다
   const resetNumbers = () => {
-    if (!confirm('고객 번호를 1번부터 다시 시작할까요?')) return;
+    if (!confirm('고객 번호를 1번부터 다시 시작하고 업로드 기록을 지울까요?\n(업로드 중인 사진은 계속 올라갑니다)')) return;
     writeStorage(STORAGE_NEXT_NO, 1);
+    clearHistory();
     startNewSession();
   };
 
@@ -457,8 +465,11 @@ export default function Station() {
               <button onClick={openDisplay} className="mt-3 w-full rounded-xl border border-zinc-700 py-3 text-sm hover:bg-zinc-800">
                 고객용 QR 화면 열기
               </button>
-              <button onClick={resetNumbers} className="mt-3 w-full text-xs text-zinc-500 hover:text-white">
-                고객 번호 1번부터 다시
+              <button
+                onClick={resetNumbers}
+                className="mt-6 w-full rounded-xl border border-zinc-800 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              >
+                처음부터 시작 (번호·기록 초기화)
               </button>
             </>
           )}
@@ -492,7 +503,14 @@ export default function Station() {
           </section>
 
           <section className="rounded-2xl bg-zinc-900 p-6">
-            <h2 className="font-medium">업로드 기록</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="font-medium">업로드 기록</h2>
+              {recent.some((it) => it.status === 'done') && (
+                <button onClick={clearHistory} className="text-xs text-zinc-500 hover:text-white">
+                  기록 지우기
+                </button>
+              )}
+            </div>
             {recent.length === 0 ? (
               <p className="mt-3 text-sm text-zinc-500">아직 없음</p>
             ) : (
