@@ -5,6 +5,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://hxgfmocmdl
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? 'sb_publishable_UboOi_FjBNkJwsj9Jh_z4w_L1w8e9uP';
 
 export const BUCKET = 'gallery';
+// supabase/functions/gallery-cleanup 의 보관 기간과 같아야 합니다
+export const RETENTION_DAYS = 3;
 export const STATION_EMAIL = 'station@studio3c.app';
 
 // 헷갈리는 글자(0/o, 1/l/i)를 뺀 소문자+숫자
@@ -40,4 +42,11 @@ export async function listGalleryFiles(sessionId: string): Promise<GalleryFile[]
   const { data, error } = await getSupabase().rpc('gallery_files', { sid: sessionId });
   if (error) throw error;
   return (data ?? []) as GalleryFile[];
+}
+
+// 보관 기간이 지나 자동 삭제된 갤러리인지
+export async function isGalleryExpired(sessionId: string): Promise<boolean> {
+  const { data, error } = await getSupabase().rpc('gallery_expired', { sid: sessionId });
+  if (error) throw error;
+  return data === true;
 }

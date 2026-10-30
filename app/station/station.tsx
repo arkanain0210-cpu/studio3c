@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { BUCKET, STATION_EMAIL, getSupabase, newSessionId } from '@/lib/gallery';
+import { BUCKET, RETENTION_DAYS, STATION_EMAIL, getSupabase, newSessionId } from '@/lib/gallery';
 import QrCode from './qr-code';
 import { CHANNEL_NAME, type ChannelMessage, type DisplayState } from './channel';
 
@@ -500,6 +500,7 @@ export default function Station() {
               마지막 사진 후 3분이 지나 새 사진이 들어오면 자동으로 다음 고객으로 넘기기
             </label>
             <p className="mt-2 text-xs text-zinc-500">사진 파일을 이 창에 끌어다 놓아도 현재 고객에게 올라갑니다.</p>
+            <p className="mt-1 text-xs text-zinc-500">올라간 사진은 {RETENTION_DAYS}일 뒤 자동으로 삭제됩니다.</p>
           </section>
 
           <section className="rounded-2xl bg-zinc-900 p-6">
