@@ -1,0 +1,42 @@
+{
+  "n": 1,
+  "id": "원본-식별자",
+  "title": "내가 붙인 제목",
+  "tags": ["유형 A", "유형 B"],
+  "summary": "이 사례가 던지는 질문 한 줄",
+  "pattern": "사건 → 시도 → 난관 → 결과",
+  "stats": { "likes": null, "views": null, "collected": "2026-01-01 00:00 KST" },
+  "original": "https://example.com/원본-주소",
+  "src": "",
+  "poster": "",
+  "duration": 40.0,
+  "context": {
+    "expectation": "시청자가 기다리게 되는 것",
+    "reuse": "이 전개에서 내 작업에 가져올 것",
+    "beats": [
+      { "t": 0, "label": "도입", "detail": "첫 장면에서 무엇을 보여주는가" },
+      { "t": 6.2, "label": "전개", "detail": "무엇을 쌓는가" },
+      { "t": 31.3, "label": "보상", "detail": "무엇을 돌려주는가" },
+      { "t": 38.5, "label": "행동", "detail": "어떤 다음 행동을 제안하는가" }
+    ]
+  },
+  "speech": [
+    {
+      "start": 0.0,
+      "end": 3.0,
+      "text": "원문 한 줄",
+      "ko": "번역 한 줄",
+      "source_type": "audio_asr_candidate",
+      "listening_verified": false,
+      "uncertainty": null
+    }
+  ],
+  "screenText": [
+    { "start": 0, "end": 2, "text": "화면에 나온 글자", "ko": "번역", "source_type": "screen_text" }
+  ],
+  "classificationNote": "화면 종류를 어떻게 나눴는지 메모",
+  "rollSegments": [
+    { "start": 6.2, "end": 17.7, "label": "창의적 b롤", "reason": "왜 이렇게 분류했는가" }
+  ],
+  "review": { "listeningVerified": false, "issues": [], "changes": [] }
+}

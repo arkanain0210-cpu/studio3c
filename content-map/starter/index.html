@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>스크롤 설계도 스타터</title>
+<!--
+  스크롤 설계도 스타터 — 의존성 없는 단일 파일.
+  원본(콘텐츠의 설계도)의 "기법"만 새로 구현한 것이고, 문구·영상·데이터는 전부 자리표시자다.
+  1) 아래 SITE 객체만 바꾸면 내용이 바뀐다.  2) :root 토큰만 바꾸면 톤이 바뀐다.
+  3) 장면 길이는 각 <section class="scene"> 의 height(vh)로 조절한다.
+  폰트: Pretendard 를 쓰려면 woff2 를 직접 호스팅하고 @font-face 를 추가한다(없으면 시스템 폰트로 보인다).
+-->
+<style>
+:root{
+  --bg:#F1EFEA; --ink:#15161A; --mute:#7C7F8A; --faint:#BABDC6; --line:#CFD1D8;
+  --accent:#2B5BFF; --dark:#0F1014; --dline:#2A2C37; --dmute:#8E92A2;
+  --gut:3.2vw;   /* 좌우 여백 */
+  --col:22%;     /* 일반 섹션의 왼쪽 라벨 열 */
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;letter-spacing:-.03em;-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;letter-spacing:inherit}
+a{color:inherit;text-decoration:none}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+
+/* 상단 바: 흰 글자 + difference 블렌드 → 밝은 배경·어두운 배경 어디서나 반전돼 보인다 */
+.top{position:fixed;inset:0 0 auto;z-index:40;display:flex;justify-content:space-between;align-items:center;padding:26px var(--gut);color:#fff;mix-blend-mode:difference;pointer-events:none}
+.top a{pointer-events:auto}
+.brand{font-size:17px;font-weight:600}
+.top nav{display:flex;gap:28px;font-size:13px;font-weight:500}
+.top nav a{opacity:.6;transition:opacity .3s}
+.top nav a:hover,.top nav a.on{opacity:1}
+#progress{position:fixed;left:0;top:0;height:2px;width:0;background:#fff}
+
+/* 스크롤 장면: 바깥 section 이 길이(vh)를 만들고, 안쪽 .pin 이 화면에 붙어 있는다 */
+.scene{position:relative}
+.pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.scene.dark .pin{background:var(--dark);color:#F4F5FA}
+.scene-label{position:absolute;left:var(--gut);top:96px;z-index:5;font-size:11px;font-weight:500;letter-spacing:.12em;color:var(--mute);line-height:1.8}
+.scene-label span{display:block;font-size:13px;letter-spacing:-.02em;color:var(--ink)}
+.dark .scene-label span{color:#fff}
+.note{position:absolute;right:var(--gut);bottom:9vh;width:min(360px,32vw);z-index:5;transition:opacity .45s}
+.note.swap{opacity:0}
+.note .eyebrow{color:var(--accent);margin-bottom:12px}
+.note h3{font-size:22px;font-weight:600;letter-spacing:-.05em;line-height:1.3;margin-bottom:10px}
+.note p{font-size:14px;line-height:1.7;color:#4C4F5C}
+.dark .note p{color:var(--dmute)}
+
+/* 장면 1 — 히어로: 가운데 작은 프레임이 화면 전체로 커진다 */
+.hero-title{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 var(--gut);font-size:min(11.5vw,17vh);font-weight:700;line-height:.98;letter-spacing:-.075em;color:#fff;mix-blend-mode:difference;z-index:3;pointer-events:none}
+.hero-title span{display:block;will-change:transform}
+.hero-title .b{align-self:flex-end;color:#9A9DAE}
+.hero-film{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34vh;height:60vh;border-radius:18px;overflow:hidden;z-index:2;background:linear-gradient(160deg,#2B5BFF,#111426 62%,#EE6A3C)}
+.hero-film video{width:100%;height:100%;object-fit:cover;display:block}
+.hero-after{position:absolute;left:var(--gut);bottom:10vh;z-index:3;color:#fff;font-size:min(6vw,8vh);font-weight:600;line-height:1.1;letter-spacing:-.06em;opacity:0}
+.hero-after span{display:block}
+
+/* 장면 2 — 단어가 스크롤만큼 진해진다 */
+.words{position:absolute;left:var(--gut);right:var(--gut);top:22vh}
+.words p{font-size:min(5vw,8.4vh);font-weight:700;letter-spacing:-.07em;line-height:1.14;margin-bottom:4.5vh;word-break:keep-all;max-width:1400px}
+.words p:last-child{color:var(--accent)}
+.words span{opacity:.14}
+
+/* 장면 3 — 개념 사다리: 큰 캔버스(.cam)를 카메라처럼 위아래로 옮기고 마지막에 전체로 물러난다 */
+.cam{position:absolute;left:0;top:0;width:100%;transform-origin:50% 0;will-change:transform}
+.edges{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.edges path{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1}
+.ln{position:absolute;width:0;display:flex;justify-content:center}
+.ln-in{white-space:nowrap;text-align:center;opacity:0;will-change:transform,opacity,filter}
+.ln small{display:block;font-size:11px;font-weight:500;letter-spacing:.14em;color:var(--mute);margin-bottom:1.2vh;text-transform:uppercase}
+.ln b{display:block;font-size:min(11vh,9vw);font-weight:700;letter-spacing:-.07em;line-height:.95;transition:color .5s}
+.ln span{display:block;margin-top:1.4vh;font-size:min(2.2vh,17px);color:var(--mute)}
+.ln.leaf b{font-size:min(7vh,6vw)}
+.ln.hot b{color:var(--accent)}
+.count{position:absolute;left:var(--gut);bottom:9vh;z-index:5;display:flex;align-items:baseline;gap:8px;font-size:12px;color:var(--mute);letter-spacing:.08em}
+.count b{font-size:44px;font-weight:600;color:var(--ink);letter-spacing:-.05em}
+
+/* 장면 4 — 가로 트랙: 세로 스크롤을 가로 이동으로 바꾼다 */
+.track{position:absolute;left:0;top:0;height:100%;display:flex;will-change:transform}
+.panel{width:100vw;height:100%;flex:0 0 auto;display:grid;grid-template-columns:1.25fr 1fr;align-items:end;gap:5vw;padding:0 var(--gut) 11vh}
+.panel .no{font-size:13px;font-weight:500;color:var(--mute);letter-spacing:.1em;margin-bottom:3vh}
+.panel h2{font-size:min(10.5vw,20vh);font-weight:700;line-height:.9;letter-spacing:-.08em;white-space:nowrap;will-change:transform}
+.panel .q{font-size:min(3.4vw,5vh);font-weight:500;letter-spacing:-.06em;margin-top:4vh;color:var(--accent)}
+.panel .body{font-size:15px;line-height:1.8;color:#484B58;max-width:460px}
+.panel .body h3{font-size:24px;font-weight:600;letter-spacing:-.05em;line-height:1.35;color:var(--ink);margin-bottom:14px}
+.dots{position:absolute;left:var(--gut);right:var(--gut);bottom:5vh;display:flex;gap:6px}
+.dots i{flex:1;height:2px;background:var(--line);position:relative;overflow:hidden}
+.dots b{position:absolute;inset:0;background:var(--ink);transform-origin:0 0;transform:scaleX(0)}
+
+/* 장면 5 — 곡선: 선분마다 pathLength=1 + dashoffset 으로 스크롤만큼 그린다 */
+.graph{position:absolute;inset:16vh var(--gut) 12vh;width:calc(100% - 2*var(--gut));height:72vh;overflow:visible}
+.graph .axis{stroke:var(--dline);stroke-width:1.5}
+.graph .guide{stroke:var(--dline);stroke-width:1.5;stroke-dasharray:3 9}
+.graph .seg{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1}
+.graph .pt{fill:var(--dark);stroke:var(--accent);stroke-width:4}
+.graph .tip{fill:#fff}
+.graph .lbl{font:700 56px Pretendard,system-ui,sans-serif;letter-spacing:-3px;fill:#fff}
+.graph .sub{font:500 24px Pretendard,system-ui,sans-serif;fill:var(--dmute)}
+.graph .n{font:500 16px Pretendard,system-ui,sans-serif;letter-spacing:3px;fill:var(--accent)}
+
+/* 장면 6 — 층 분해: 한 장의 화면을 3D 로 눕혀 층 사이를 벌린다 */
+.stack-wrap{position:absolute;inset:0;display:grid;place-items:center;perspective:1300px}
+.stack{position:relative;width:42vh;height:74vh;transform-style:preserve-3d;will-change:transform}
+.layer{position:absolute;inset:0;border-radius:18px;transform-style:preserve-3d;will-change:transform}
+.layer:nth-child(1){background:linear-gradient(200deg,#3A4A8C,#16182A 70%)}
+.layer:nth-child(n+2){background:rgba(255,255,255,calc(var(--o,0)*.16));box-shadow:inset 0 0 0 1px rgba(255,255,255,calc(var(--o,0)*.85)),0 0 0 1px rgba(21,22,26,calc(var(--o,0)*.14))}
+.layer .cap{position:absolute;left:9%;right:9%;top:10%;color:#fff;font-size:min(5.4vh,46px);font-weight:700;letter-spacing:-.07em;line-height:1.1}
+.layer .wave{position:absolute;left:12%;right:12%;bottom:13%;height:12%;display:flex;align-items:center;gap:3px}
+.layer .wave i{flex:1;background:#fff;border-radius:2px;opacity:.9}
+.layer .tag{position:absolute;left:calc(100% + 4vh);top:50%;white-space:nowrap;font-size:14px;color:var(--mute);opacity:0;transform-origin:0 50%}
+.layer .tag b{display:block;font-size:min(3.4vh,26px);color:var(--ink);font-weight:700;letter-spacing:-.05em}
+
+/* 일반 섹션(고정 없음): 22% 라벨 열 + 본문 열 */
+.plain{padding:22vh var(--gut) 14vh;position:relative}
+.plain.dark{background:var(--dark);color:#F2F3F8}
+.plain.dark .eyebrow{color:var(--dmute)}
+.head{display:grid;grid-template-columns:var(--col) 1fr;align-items:start;margin-bottom:9vh}
+.head .eyebrow{padding-top:14px}
+.head h2{font-size:min(7.2vw,110px);font-weight:700;line-height:1.02;letter-spacing:-.075em;word-break:keep-all}
+.head h2 em{font-style:normal;color:var(--accent)}
+.head .sub{grid-column:2;margin-top:26px;font-size:15px;color:var(--mute);max-width:520px}
+.lm{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}                /* 줄 마스크 */
+.lmi{display:inline-block;transform:translate3d(0,112%,0);transition:transform 1.25s var(--ease) calc(var(--d,0s) + .08s)}
+.rv.in .lmi{transform:none}
+.rv{opacity:0;transform:translateY(40px);transition:opacity .9s,transform 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.head.rv{transform:none}
+.steps{list-style:none;padding:0;display:grid;grid-template-columns:repeat(4,1fr);margin-left:var(--col);border-top:1px solid currentColor}
+.steps li{padding:26px 26px 30px 0;border-right:1px solid var(--line);min-height:220px}
+.steps li+li{padding-left:26px}
+.steps li:last-child{border-right:0}
+.dark .steps li{border-color:var(--dline)}
+.steps span{font-size:12px;letter-spacing:.08em;color:var(--accent)}
+.steps h3{font-size:min(2.4vw,32px);font-weight:700;letter-spacing:-.06em;line-height:1.2;margin:38px 0 12px}
+.steps p{font-size:14px;color:var(--mute)}
+
+/* 라이브러리: 태그 필터 + 검색 + 카드 그리드 */
+.tools{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-left:var(--col);flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid #3A3D4B;padding:9px 18px;font-size:13px;color:#C9CCD9;transition:.3s}
+.chips button[aria-pressed=true]{background:#fff;color:var(--ink);border-color:#fff}
+.tools input{background:none;border:0;border-bottom:1px solid #3A3D4B;color:#fff;padding:10px 0;min-width:240px;font:inherit;font-size:14px;outline:0}
+.meta{margin:24px 0 38px var(--col);font-size:12px;color:var(--dmute)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:48px 18px}
+.card{text-align:left}
+.card .th{aspect-ratio:9/16;background:#1B1C24 center/cover;position:relative;overflow:hidden}
+.card .th span{position:absolute;right:12px;top:10px;font-size:12px;color:#fff;opacity:.8}
+.card h3{font-size:18px;font-weight:600;letter-spacing:-.05em;line-height:1.35;margin:16px 0 6px}
+.card p{font-size:12px;color:var(--dmute)}
+
+/* 구간 막대 목록: 한 줄 = 한 편, 막대 = 구간의 실제 시간 비율 */
+.rows{list-style:none;padding:0;border-top:1px solid var(--ink)}
+.rows>li{border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:56px minmax(0,1.1fr) minmax(0,1fr) 28px;gap:24px;align-items:center;width:100%;text-align:left;padding:18px 0}
+.row:hover{background:rgba(0,0,0,.04)}
+.row .n{font:500 12px ui-monospace,Consolas,monospace;color:var(--mute)}
+.row b{display:block;font-size:17px;font-weight:600;letter-spacing:-.04em}
+.row small{font-size:12px;color:var(--mute)}
+.row .pl{font-size:22px;font-weight:300;text-align:center;transition:transform .3s}
+li.open .pl{transform:rotate(45deg)}
+.bar{position:relative;height:14px;background:#E1E3EA}
+.bar i{position:absolute;top:0;bottom:0;background:var(--c);border-right:2px solid var(--bg)}
+.hook{--c:#fff;box-shadow:inset 0 0 0 1.5px var(--accent)} .build{--c:var(--ink)} .twist{--c:var(--mute)} .payoff{--c:var(--accent)} .cta{--c:#9DB4FF}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--mute);padding-bottom:14px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.legend span{box-shadow:none}
+.legend .hook::before{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.row-body{display:none;padding:6px 0 40px 80px}
+li.open .row-body{display:block}
+.beat{display:grid;grid-template-columns:96px 1fr;gap:18px;padding:14px 0;border-top:1px solid var(--line);box-shadow:none}
+.beat>span{font:500 12px ui-monospace,Consolas,monospace;color:var(--mute)}
+.beat b{font-size:14px;font-weight:700}
+.beat b::before{content:"";display:inline-block;width:10px;height:10px;margin-right:8px;background:var(--c)}
+.beat p{margin-top:6px;font-size:15px;line-height:1.6}
+
+/* 끝: 검은 바가 화면 전체로 커진다 */
+.outro{position:relative;height:220vh}
+.outro .pin{background:var(--bg)}
+.outro footer{position:absolute;left:0;right:0;bottom:0;height:42%;background:var(--dark);color:#fff}
+.outro footer p{position:absolute;left:var(--gut);top:50%;transform:translateY(-50%);font-size:min(10vw,170px);font-weight:700;letter-spacing:-.08em;line-height:1}
+
+/* 상세 팝업 */
+dialog{margin:auto;border:0;padding:0;width:min(1100px,94vw);height:min(760px,90vh);border-radius:16px;background:var(--bg);color:var(--ink);overflow:hidden}
+dialog::backdrop{background:rgba(10,11,16,.9)}
+.d-head{display:flex;justify-content:space-between;align-items:center;padding:18px 26px;border-bottom:1px solid var(--line)}
+.d-head h2{font-size:22px;font-weight:600;letter-spacing:-.05em}
+.d-head button{font-size:13px;border:1px solid var(--line);border-radius:30px;padding:8px 16px}
+.d-body{display:grid;grid-template-columns:minmax(0,360px) 1fr;height:calc(100% - 71px)}
+.d-media{background:var(--dark);padding:18px;display:grid;place-items:center;color:var(--dmute);font-size:13px}
+.d-media video{width:100%;height:100%;object-fit:contain;background:#000;border-radius:10px}
+.d-read{overflow:auto;padding:26px 30px 40px}
+.d-read h3{font-size:20px;font-weight:600;letter-spacing:-.05em;margin:14px 0 10px}
+.d-read .pattern{margin:14px 0;padding:14px 16px;background:#E3E1DB;border-radius:10px;font-size:13px;line-height:1.7}
+.seek{display:grid;grid-template-columns:62px 1fr;gap:10px;width:100%;text-align:left;padding:12px 0;border-top:1px solid var(--line)}
+.seek span{font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums}
+.seek b{font-size:14px;font-weight:600}
+.seek p{font-size:13px;color:#4C4F5C;line-height:1.6}
+
+@media (max-width:900px){
+  :root{--gut:5vw;--col:0%}
+  .top nav a:nth-child(n+4){display:none}
+  .scene-label{top:68px}
+  .note{left:var(--gut);right:var(--gut);width:auto;bottom:4vh}
+  .cam{width:1000px;left:50%;margin-left:-500px}      /* 사다리는 1000px 로 그리고 통째로 줄인다 */
+  .count{inset:68px var(--gut) auto auto}.count b{font-size:28px}
+  .panel{grid-template-columns:1fr;align-content:end;gap:3vh;padding-bottom:10vh}
+  .stack{width:26vh;height:46vh}.stack-wrap{bottom:20vh}
+  .layer .tag{left:auto;right:calc(100% + 2vh);text-align:right}
+  .plain{padding:14vh var(--gut) 10vh}
+  .head{display:block}.head h2{font-size:12vw;margin-top:10px}
+  .steps{grid-template-columns:1fr}.steps li,.steps li+li{border-right:0;border-bottom:1px solid var(--line);min-height:0;padding:22px 0}
+  .steps h3{font-size:26px;margin:12px 0 8px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:30px 12px}.card h3{font-size:14px}
+  .row{grid-template-columns:40px 1fr 24px;gap:12px}.row .bar{grid-column:1/-1;grid-row:2}
+  .row-body{padding-left:0}
+  .d-body{grid-template-columns:1fr;grid-template-rows:40% 60%}
+  .graph .lbl{font-size:72px}.graph .sub{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){.rv,.lmi{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><a class="brand" href="#home" id="brand"></a><nav id="nav" aria-label="주요 탐색"></nav><i id="progress"></i></header>
+<main>
+
+<section id="home" class="scene" data-scene="hero" style="height:230vh"><div class="pin">
+  <h1 class="hero-title"><span class="a" id="heroA"></span><span class="b" id="heroB"></span></h1>
+  <div class="hero-film" id="heroFilm"></div>
+  <p class="hero-after" id="heroAfter"></p>
+</div></section>
+
+<section id="intro" class="scene" data-scene="words" style="height:360vh"><div class="pin">
+  <div class="scene-label">00 / 서론<span>왜 이 주제인가</span></div>
+  <div class="words" id="words"></div>
+</div></section>
+
+<section id="map" class="scene" data-scene="ladder" style="height:700vh"><div class="pin">
+  <div class="cam" id="cam"><svg class="edges" id="edges" aria-hidden="true"></svg><div id="nodes"></div></div>
+  <aside class="note" id="ladderNote" aria-live="polite"></aside>
+  <div class="count"><b id="ladderStep">01</b><span id="ladderOf"></span></div>
+</div></section>
+
+<section id="types" class="scene" data-scene="track" style="height:420vh"><div class="pin">
+  <div class="scene-label">02 / 유형<span>가로로 넘겨 본다</span></div>
+  <div class="track" id="track"></div><div class="dots" id="dots"></div>
+</div></section>
+
+<section id="curve" class="scene dark" data-scene="curve" style="height:520vh"><div class="pin">
+  <div class="scene-label">03 / 흐름<span>시간에 따른 변화</span></div>
+  <svg class="graph" id="graph" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="단계별 곡선"></svg>
+</div></section>
+
+<section id="layers" class="scene" data-scene="layers" style="height:460vh"><div class="pin">
+  <div class="scene-label">04 / 구성<span>한 화면도 여러 층이다</span></div>
+  <div class="stack-wrap"><div class="stack" id="stack"></div></div>
+  <aside class="note" id="layerNote" style="right:auto;left:var(--gut)" aria-live="polite"></aside>
+</div></section>
+
+<section id="process" class="plain">
+  <div class="head rv"><p class="eyebrow">05 / PROCESS</p><h2>정리한 것을<br><em>내 작업에 붙인다.</em></h2><p class="sub">고정되지 않는 일반 섹션. 제목은 줄마다 마스크 아래에서 밀려 올라온다.</p></div>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<section id="library" class="plain dark">
+  <div class="head rv"><p class="eyebrow">06 / LIBRARY</p><h2>개념을 실제 사례로.</h2><p class="sub">태그는 복수 선택(하나라도 포함), 검색은 제목·요약·패턴 전체.</p></div>
+  <div class="tools"><div class="chips" id="filters"></div><input type="search" id="search" placeholder="제목 · 내용 검색" aria-label="검색"></div>
+  <p class="meta" id="count"></p>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="scripts" class="plain">
+  <div class="head rv"><p class="eyebrow">07 / SEGMENTS</p><h2>한 편을<br><em>구간으로.</em></h2></div>
+  <div class="legend"><span class="hook">훅</span><span class="build">빌드</span><span class="twist">반전</span><span class="payoff">보상</span><span class="cta">CTA</span></div>
+  <ol class="rows" id="rows"></ol>
+</section>
+
+<section class="outro" id="outro"><div class="pin"><footer id="endBar"><p id="endT"></p></footer></div></section>
+</main>
+
+<dialog id="dlg"><div class="d-head"><h2 id="dTitle"></h2><button id="dClose">닫기 ✕</button></div>
+  <div class="d-body"><div class="d-media" id="dMedia"></div><div class="d-read" id="dRead"></div></div></dialog>
+
+<script>
+/* ════════ 1. 내용 — 여기만 바꾸면 된다 ════════ */
+const SITE={
+  brand:'내 설계도',
+  nav:[['map','개념'],['types','유형'],['curve','흐름'],['layers','구성'],['library','사례'],['scripts','구간']],
+  hero:{a:'큰 개념에서',b:'한 장면까지',after:['한 문장으로','주제를 말한다.'],video:''},   // video: mp4 경로를 넣으면 프레임 안에서 재생
+  intro:['첫 문장은 익숙한 분야의 비유로 시작한다.','둘째 문장은 다른 분야에서도 같다고 말한다.','셋째 문장이 이 페이지의 주장이다.'],
+  /* 사다리: s=등장 단계, x=가로 위치(%), y=세로 위치(vh). tree=[부모,자식] */
+  ladder:{
+    nodes:[
+      {id:'root',s:0,x:50,y:8, k:'THE BIG PICTURE',w:'하나의 결과물',q:'누가, 무엇을, 어떻게.'},
+      {id:'who', s:1,x:18,y:84,k:'1 · 주체',w:'WHO',q:'누가 말하는가'},
+      {id:'what',s:1,x:50,y:84,k:'2 · 주제',w:'WHAT',q:'무엇을 말하는가'},
+      {id:'how', s:1,x:82,y:84,k:'3 · 방식',w:'HOW',q:'어떻게 보여주는가'},
+      {id:'draft',s:2,x:50,y:170,k:'WHAT → 초안',w:'초안',q:'말할 내용을 글로 옮긴다'},
+      {id:'form', s:2,x:82,y:170,k:'HOW → 형식',w:'형식',q:'무엇을 따라가게 할까'},
+      {id:'flow', s:3,x:66,y:256,k:'초안 + 형식',w:'구조',q:'시간 위의 순서'},
+      {id:'s1',s:4,x:20,y:340,cls:'leaf',k:'01',w:'도입',q:'볼 이유'},
+      {id:'s2',s:4,x:42,y:340,cls:'leaf',k:'02',w:'전개',q:'계속 볼 이유'},
+      {id:'s3',s:4,x:64,y:340,cls:'leaf',k:'03',w:'보상',q:'기대를 돌려주기'},
+      {id:'s4',s:4,x:84,y:340,cls:'leaf',k:'04',w:'행동',q:'다음 한 걸음'}],
+    tree:[['root','who'],['root','what'],['root','how'],['what','draft'],['how','form'],['draft','flow'],['form','flow'],['flow','s1'],['flow','s2'],['flow','s3'],['flow','s4']],
+    notes:[   // 단계 수 + 1(마지막 전체 보기)개
+      ['THE BIG PICTURE','한 편을 펼쳐 봅니다.','큰 질문에서 작은 선택으로 내려갑니다.'],
+      ['WHO · WHAT · HOW','세 질문에서 출발한다.','주체, 주제, 방식.'],
+      ['두 갈래','주제는 초안이, 방식은 형식이 된다.','각 갈래를 따로 정한다.'],
+      ['합류','둘이 만나 구조가 된다.','시간 위의 순서가 정해진다.'],
+      ['네 구간','구조는 시간 순서다.','도입 → 전개 → 보상 → 행동.'],
+      ['전체','이 지도를 들고 기획한다.','마지막에는 물러나 전체를 본다.']]},
+  panels:[
+    {no:'01',w:'유형 A',q:'첫 번째 질문은?',h:'이 유형이 주는 기대.',t:'유형을 한 문단으로 설명한다. 어떤 기대를 만들고 무엇이 볼 이유가 되는지.'},
+    {no:'02',w:'유형 B',q:'두 번째 질문은?',h:'이 유형이 주는 기대.',t:'유형을 한 문단으로 설명한다.'},
+    {no:'03',w:'유형 C',q:'세 번째 질문은?',h:'이 유형이 주는 기대.',t:'유형을 한 문단으로 설명한다.'}],
+  curve:{base:880,pts:[[110,560],[470,260],[830,700],[1170,380],[1500,170]],
+    labels:[{t:'시작',s:'무슨 일이 생겼지?',a:'start'},{t:'기대',s:'잘 될까?',up:1},{t:'갈등',s:'이제 어떡하지?'},{t:'선택',s:'무엇을 고를까?',up:1,a:'end'},{t:'변화',s:'어떻게 달라졌지?',up:1,a:'end'}]},
+  layers:[
+    {tag:'01 화면',sub:'주 화면 · 보조 화면',note:['화면','가장 아래 층. 실제로 보이는 그림이다.']},
+    {tag:'02 음성',sub:'직접 말하기 · 내레이션',note:['음성','화면 위에 얹히는 소리 층.']},
+    {tag:'03 텍스트',sub:'제목 · 자막',cap:'화면 위<br>큰 제목',note:['텍스트','같은 순간에 함께 작동하는 글자 층.']}],
+  layerIntro:['한 장면','보이는 건 한 장면이지만 따로 고른 층이 겹쳐 있다.'],
+  steps:[['01','가진 것에서 출발','이미 있는 초안에서 시작한다.'],['02','사례에서 가져오기','분류해 모아둔 장면을 찾는다.'],['03','내 것으로 바꾸기','내 이야기와 톤으로 고친다.'],['04','제자리에 넣기','문장에 맞춰 붙인다.']],
+  /* 라이브러리 항목 — 스키마는 ../05-data-schema.md 참고 */
+  items:[
+    {n:1,title:'사례 하나',tags:['유형 A'],duration:43,summary:'이 사례가 던지는 질문 한 줄.',pattern:'사건 → 시도 → 난관 → 결과',src:'',poster:'',
+     beats:[{t:0,label:'도입',detail:'첫 3초에 무엇을 보여주는가.'},{t:9,label:'전개',detail:'무엇을 쌓는가.'},{t:31,label:'보상',detail:'무엇을 돌려주는가.'}]},
+    {n:2,title:'사례 둘',tags:['유형 B'],duration:58,summary:'두 번째 사례의 질문.',pattern:'질문 → 설명 → 정리',src:'',poster:'',beats:[{t:0,label:'도입',detail:'…'}]},
+    {n:3,title:'사례 셋',tags:['유형 A','유형 C'],duration:35,summary:'세 번째 사례의 질문.',pattern:'선언 → 과정 → 결과',src:'',poster:'',beats:[{t:0,label:'도입',detail:'…'}]},
+    {n:4,title:'사례 넷',tags:['유형 C'],duration:71,summary:'네 번째 사례의 질문.',pattern:'목표 → 시도 → 달성 여부',src:'',poster:'',beats:[{t:0,label:'도입',detail:'…'}]}],
+  /* 구간 목록 — beats: [종류, 시작초, 끝초, 해당 문장] */
+  rows:[
+    {title:'구간 예시 하나',by:'@account',dur:40,beats:[['hook',0,6,'첫 문장.'],['build',6,31,'쌓는 문장들.'],['payoff',31,38,'돌려주는 문장.'],['cta',38,40,'다음 행동.']]},
+    {title:'구간 예시 둘',by:'@account',dur:79,beats:[['hook',0,12,'첫 문장.'],['twist',12,19,'전제를 뒤집는다.'],['build',19,51,'쌓는다.'],['payoff',51,72,'돌려준다.'],['cta',72,79,'다음 행동.']]}],
+  end:'수고하셨습니다.'};
+const KIND={hook:'훅',build:'빌드',twist:'반전',payoff:'보상',cta:'CTA'};
+
+/* ════════ 2. 도구 ════════ */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v, lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, eout=t=>1-Math.pow(1-t,3);
+const span=(v,a,b)=>clamp((v-a)/(b-a));                      // v 가 a→b 를 지나는 진행도(0→1). 모든 타이밍을 이걸로 쓴다
+const mmss=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+const MOB=()=>innerWidth<900;
+const timers={};
+function swap(sel,html){const el=$(sel);clearTimeout(timers[sel]);el.classList.add('swap');timers[sel]=setTimeout(()=>{el.innerHTML=html();el.classList.remove('swap')},220);}
+
+/* ════════ 3. 장면별 build(한 번) / render(p: 0→1, 매 프레임) ════════ */
+function renderHero(p){
+  const g=ease(span(p,.05,.75)),W=innerWidth,H=innerHeight,f=$('#heroFilm');
+  f.style.width=lerp(H*.34,W,g)+'px';f.style.height=lerp(H*.6,H,g)+'px';f.style.borderRadius=lerp(18,0,g)+'px';
+  f.style.filter=`brightness(${lerp(1,.4,span(p,.45,.8)).toFixed(3)})`;
+  $('#heroA').style.transform=`translate3d(${(-g*30).toFixed(2)}vw,0,0)`;$('#heroB').style.transform=`translate3d(${(g*30).toFixed(2)}vw,0,0)`;
+  $('.hero-title').style.opacity=1-span(p,.35,.7);
+  const a=span(p,.72,.92);$('#heroAfter').style.opacity=a;$('#heroAfter').style.transform=`translateY(${(1-eout(a))*30}px)`;
+}
+
+let words=[];
+function renderWords(p){const lit=span(p,.1,.85)*words.length;words.forEach((w,i)=>w.style.opacity=(.14+.86*clamp(lit-i)).toFixed(3));}
+
+const LD={nodes:{},fx:[],at:-1};
+function buildLadder(){
+  const L=SITE.ladder;
+  $('#cam').style.height=(Math.max(...L.nodes.map(n=>n.y))+40)+'vh';
+  $('#nodes').innerHTML=L.nodes.map(n=>`<div class="ln ${n.cls||''}" id="n-${n.id}" style="left:${n.x}%;top:${n.y}vh"><div class="ln-in">${n.k?`<small>${esc(n.k)}</small>`:''}<b>${esc(n.w)}</b>${n.q?`<span>${esc(n.q)}</span>`:''}</div></div>`).join('');
+  L.nodes.forEach(n=>LD.nodes[n.id]={...n,el:$('#n-'+n.id),inn:$('#n-'+n.id+' .ln-in')});
+  LD.maxS=Math.max(...L.nodes.map(n=>n.s));LD.stages=LD.maxS+2;                // 마지막 한 단계는 전체 보기
+  $('#ladderOf').textContent='/ '+String(LD.stages).padStart(2,'0');
+  layoutLadder();
+}
+function layoutLadder(){      // 선은 실제 픽셀 좌표로 다시 그린다 — 글자 크기가 화면마다 달라서
+  const cam=$('#cam'),svg=$('#edges');svg.setAttribute('viewBox',`0 0 ${cam.clientWidth} ${cam.clientHeight}`);
+  const pos=id=>{const n=LD.nodes[id];return{x:n.el.offsetLeft,top:n.el.offsetTop,bot:n.el.offsetTop+n.inn.offsetHeight}};
+  svg.innerHTML=SITE.ladder.tree.map(([a,b])=>{const A=pos(a),B=pos(b),y1=A.bot+14,y2=B.top-14,m=(y2-y1)*.55;
+    return `<path pathLength="1" data-s="${LD.nodes[b].s}" d="M${A.x} ${y1} C${A.x} ${y1+m} ${B.x} ${y2-m} ${B.x} ${y2}"/>`}).join('');
+  LD.fx=[...svg.querySelectorAll('path')];
+  const all=Object.keys(LD.nodes).map(pos);LD.top=Math.min(...all.map(a=>a.top));LD.bot=Math.max(...all.map(a=>a.bot));
+  LD.focus=[];for(let k=0;k<=LD.maxS;k++){const ns=Object.values(LD.nodes).filter(n=>n.s===k).map(n=>pos(n.id));LD.focus[k]=ns.reduce((s,a)=>s+(a.top+a.bot)/2,0)/ns.length;}
+}
+function renderLadder(p){
+  const N=LD.stages,s=p*(N-1)+1e-4,i=Math.min(Math.floor(s),N-2),f=ease(clamp(s-i));
+  const M=MOB()?innerWidth/1000:1,cy=innerHeight*.46,ty0=cy-LD.focus[i]*M;let ty,sc=M;
+  if(i+1>LD.maxS){const full=LD.bot-LD.top,fit=Math.min(1,innerHeight*.78/(full*M)),tyFit=(innerHeight-full*M*fit)/2-LD.top*M*fit;sc=M*lerp(1,fit,f);ty=lerp(ty0,tyFit,f);}
+  else ty=lerp(ty0,cy-LD.focus[i+1]*M,f);
+  $('#cam').style.transform=`translate3d(0,${ty.toFixed(1)}px,0) scale(${sc.toFixed(4)})`;
+  const overview=span(s,N-1.6,N-1),cur=Math.round(s);
+  Object.values(LD.nodes).forEach(n=>{
+    const r=n.s===0?1:eout(span(s,n.s-.45,n.s+.05));let op=r;                  // 선이 먼저 닿고, 그 끝에서 떠오른다
+    if(n.s<cur-.5)op*=lerp(.34,1,overview);                                    // 지나간 단계는 흐리게, 전체 보기에서 다시 선명하게
+    n.inn.style.opacity=op.toFixed(3);n.inn.style.transform=`translate3d(0,${((1-r)*40).toFixed(1)}px,0)`;n.inn.style.filter=r<1?`blur(${((1-r)*10).toFixed(1)}px)`:'none';
+    n.el.classList.toggle('hot',n.s===cur&&n.s>0&&overview<.5);});
+  LD.fx.forEach(el=>{const st=+el.dataset.s;el.style.strokeDashoffset=(1-ease(span(s,st-.95,st-.3))).toFixed(4);});
+  const k=Math.min(N-1,cur);$('#ladderStep').textContent=String(k+1).padStart(2,'0');
+  if(k!==LD.at){LD.at=k;const d=SITE.ladder.notes[k]||SITE.ladder.notes.at(-1);swap('#ladderNote',()=>`<p class="eyebrow">${esc(d[0])}</p><h3>${esc(d[1])}</h3><p>${esc(d[2])}</p>`);}
+}
+
+function renderTrack(p){      // 패널마다 멈춰 읽는 구간(앞뒤 28%)을 두고 가운데에서만 넘어간다
+  const n=SITE.panels.length;if(n<2)return;const s=p*(n-1),i=Math.min(Math.floor(s),n-2),x=i+ease(span(s-i,.28,.72));
+  $('#track').style.transform=`translate3d(${(-x*100).toFixed(3)}vw,0,0)`;
+  $$('#dots b').forEach((b,k)=>b.style.transform=`scaleX(${clamp(x-k+1).toFixed(3)})`);
+  $$('#track h2').forEach((h,k)=>h.style.transform=`translate3d(${((k-x)*7).toFixed(2)}vw,0,0)`);   // 큰 글자가 살짝 늦게 따라온다
+}
+
+let G;
+function buildCurve(){
+  const {pts,labels,base}=SITE.curve,svg=$('#graph');
+  const segs=pts.slice(0,-1).map((a,i)=>{const b=pts[i+1],dx=(b[0]-a[0])*.46;return `M${a[0]} ${a[1]} C${a[0]+dx} ${a[1]} ${b[0]-dx} ${b[1]} ${b[0]} ${b[1]}`});
+  const lab=(l,p,i)=>{const a=l.a||'middle',Y=l.up?[p[1]-150,p[1]-80,p[1]-38]:[p[1]+56,p[1]+122,p[1]+162];
+    return `<g class="lg"><text class="n" x="${p[0]}" y="${Y[0]}" text-anchor="${a}">${String(i+1).padStart(2,'0')}</text><text class="lbl" x="${p[0]}" y="${Y[1]}" text-anchor="${a}">${esc(l.t)}</text><text class="sub" x="${p[0]}" y="${Y[2]}" text-anchor="${a}">${esc(l.s)}</text></g>`};
+  svg.innerHTML=`<line class="axis" x1="-200" y1="${base}" x2="1800" y2="${base}"/>`+pts.map(p=>`<line class="guide" x1="${p[0]}" y1="${p[1]}" x2="${p[0]}" y2="${base}"/>`).join('')+
+    segs.map(d=>`<path class="seg" pathLength="1" d="${d}"/>`).join('')+pts.map(p=>`<circle class="pt" cx="${p[0]}" cy="${p[1]}" r="13"/>`).join('')+labels.map((l,i)=>lab(l,pts[i],i)).join('')+`<circle class="tip" r="9"/>`;
+  G={segs:[...svg.querySelectorAll('.seg')],pts:[...svg.querySelectorAll('.pt')],lg:[...svg.querySelectorAll('.lg')],gd:[...svg.querySelectorAll('.guide')],tip:svg.querySelector('.tip'),n:pts.length};
+}
+function renderCurve(p){
+  const d=ease(span(p,.08,.86))*(G.n-1),pop=i=>eout(span(d,i-.3,i));           // 점은 선이 닿는 순간 튀어나온다
+  G.segs.forEach((s,i)=>s.style.strokeDashoffset=(1-clamp(d-i)).toFixed(4));
+  G.pts.forEach((c,i)=>{const r=pop(i);c.style.opacity=r;c.setAttribute('r',(13*r).toFixed(2));});
+  G.gd.forEach((g,i)=>g.style.opacity=pop(i)*.9);
+  G.lg.forEach((g,i)=>{const r=pop(i);g.style.opacity=r;g.style.transform=`translateY(${((1-r)*24).toFixed(1)}px)`;});
+  const i=Math.min(Math.floor(d),G.n-2),seg=G.segs[i],pt=seg.getPointAtLength(seg.getTotalLength()*clamp(d-i));
+  G.tip.setAttribute('cx',pt.x.toFixed(1));G.tip.setAttribute('cy',pt.y.toFixed(1));G.tip.style.opacity=Math.min(clamp(d/.12),clamp((G.n-1-d)/.12)).toFixed(3);
+}
+
+let layerAt=-1;
+function buildLayers(){
+  $('#stack').innerHTML=SITE.layers.map((l,i)=>`<div class="layer" data-i="${i}">${l.cap?`<span class="cap">${l.cap}</span>`:''}${i===1?`<div class="wave">${Array.from({length:30},(_,k)=>`<i style="height:${(18+72*Math.abs(Math.sin(k*1.7)*Math.cos(k*.45))).toFixed(0)}%"></i>`).join('')}</div>`:''}<span class="tag"><b>${esc(l.tag)}</b>${esc(l.sub)}</span></div>`).join('');
+}
+function renderLayers(p){
+  const open=ease(span(p,.06,.32))*(1-ease(span(p,.8,.96))),vh=innerHeight/100,yaw=-30-10*span(p,.2,.8),gap=open*17*vh,st=$('#stack');
+  st.style.transform=`translate3d(0,${(open*12*vh).toFixed(1)}px,0) scale(${(1-open*.36).toFixed(4)}) rotateX(${(open*54).toFixed(2)}deg) rotateZ(${(open*yaw).toFixed(2)}deg)`;
+  st.style.setProperty('--o',open.toFixed(3));
+  $$('#stack .layer').forEach((l,i)=>{l.style.transform=`translate3d(0,0,${(i*gap).toFixed(1)}px)`;const t=l.querySelector('.tag');
+    t.style.transform=`translateY(-50%) rotateZ(${(-open*yaw).toFixed(2)}deg) rotateX(${(-open*54).toFixed(2)}deg)`;      // 이름표는 보는 쪽으로 다시 세운다
+    t.style.opacity=(ease(span(p,.3+i*.05,.4+i*.05))*(1-span(p,.76,.82))).toFixed(3);});
+  const n=SITE.layers.length,k=p<.28?0:p>.82?n+1:1+Math.min(n-1,Math.floor(span(p,.28,.82)*n));
+  if(k!==layerAt){layerAt=k;const d=k===0||k>n?SITE.layerIntro:SITE.layers[k-1].note;swap('#layerNote',()=>`<h3>${esc(d[0])}</h3><p>${esc(d[1])}</p>`);}
+}
+
+function renderOutro(){const s=$('#outro'),r=s.getBoundingClientRect(),q=clamp(-r.top/Math.max(1,s.offsetHeight-innerHeight));$('#endBar').style.height=lerp(42,100,ease(q)).toFixed(2)+'%';$('#progress').style.opacity=(1-span(q,.85,1)).toFixed(3);}
+
+/* ════════ 4. 장면 엔진 ════════
+   장면마다 스크롤 진행도 t(0→1)를 구하고, 화면에 쓰는 값 c 는 t 를 매 프레임 12%씩 따라간다(관성).
+   화면 근처에 있는 장면만 다시 그리고, 값이 안 바뀌면 건너뛴다. */
+const RENDER={hero:renderHero,words:renderWords,ladder:renderLadder,track:renderTrack,curve:renderCurve,layers:renderLayers};
+const REDUCED=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let scenes=[];
+function measure(){scenes.forEach(s=>{s.top=s.el.getBoundingClientRect().top+scrollY;s.len=Math.max(1,s.el.offsetHeight-innerHeight);});}
+function tick(){
+  const y=scrollY,H=innerHeight;
+  scenes.forEach(s=>{
+    s.t=clamp((y-s.top)/s.len);
+    const near=y+H>s.top-H*.5&&y<s.top+s.el.offsetHeight+H*.5;
+    if(s.c<0||!near||REDUCED)s.c=s.t;else s.c+=(s.t-s.c)*.12;
+    if(Math.abs(s.t-s.c)<.0003)s.c=s.t;
+    if(near&&s.c!==s.last){s.last=s.c;s.fn(s.c);}});
+  $('#progress').style.width=(y/Math.max(1,document.documentElement.scrollHeight-H)*100)+'%';
+  renderOutro();requestAnimationFrame(tick);
+}
+
+/* ════════ 5. 일반 섹션: 라이브러리 · 구간 목록 · 팝업 ════════ */
+const filters=new Set();let shown=[];
+function library(){
+  const q=$('#search').value.trim().toLowerCase();
+  shown=SITE.items.filter(v=>(!filters.size||v.tags.some(t=>filters.has(t)))&&(!q||[v.title,v.summary,v.pattern].join(' ').toLowerCase().includes(q)));
+  $$('#filters [data-f]').forEach(b=>b.setAttribute('aria-pressed',String(filters.has(b.dataset.f))));$('#fAll').setAttribute('aria-pressed',String(!filters.size));
+  $('#count').textContent=`${shown.length} / ${SITE.items.length}편`;
+  $('#grid').innerHTML=shown.map(v=>`<button class="card" data-open="${v.n}"><div class="th"${v.poster?` style="background-image:url('${esc(v.poster)}')"`:''}><span>${mmss(v.duration)}</span></div><h3>${esc(v.title)}</h3><p>${v.tags.map(esc).join(' · ')}</p></button>`).join('')||'<p class="meta" style="margin:0">조건에 맞는 항목이 없습니다.</p>';
+}
+function openItem(n){
+  const v=SITE.items.find(x=>x.n===n);if(!v)return;
+  $('#dTitle').textContent=v.title;
+  $('#dMedia').innerHTML=v.src?`<video id="dVideo" controls playsinline preload="metadata" src="${esc(v.src)}"${v.poster?` poster="${esc(v.poster)}"`:''}></video>`:'영상 경로(src)를 넣으면 여기서 재생됩니다.';
+  $('#dRead').innerHTML=`<p class="eyebrow" style="color:var(--accent)">${v.tags.map(esc).join(' + ')}</p><h3>${esc(v.summary)}</h3><div class="pattern">${esc(v.pattern)}</div>`+
+    v.beats.map(b=>`<button class="seek" data-seek="${b.t}"><span>${mmss(b.t)}</span><div><b>${esc(b.label)}</b><p>${esc(b.detail)}</p></div></button>`).join('');
+  if(!$('#dlg').open){$('#dlg').showModal();document.body.style.overflow='hidden';}
+}
+function rows(){
+  $('#rows').innerHTML=SITE.rows.map((x,i)=>{const D=Math.max(x.dur,...x.beats.map(b=>b[2]));
+    return `<li><button class="row"><span class="n">${String(i+1).padStart(3,'0')}</span><span><b>${esc(x.title)}</b><small>${esc(x.by)} · ${mmss(x.dur)}</small></span><div class="bar">${x.beats.map(b=>`<i class="${b[0]}" style="left:${(b[1]/D*100).toFixed(2)}%;width:${Math.max(.6,(b[2]-b[1])/D*100).toFixed(2)}%"></i>`).join('')}</div><span class="pl">+</span></button>
+      <div class="row-body">${x.beats.map(b=>`<div class="beat ${b[0]}"><span>${mmss(b[1])}–${mmss(b[2])}</span><div><b>${KIND[b[0]]||esc(b[0])}</b><p>${esc(b[3])}</p></div></div>`).join('')}</div></li>`}).join('');
+}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.f){filters.has(d.f)?filters.delete(d.f):filters.add(d.f);library();}
+  if(b.id==='fAll'){filters.clear();$('#search').value='';library();}
+  if(d.open)openItem(+d.open);
+  if(d.seek!==undefined){const v=$('#dVideo');if(v){v.currentTime=+d.seek;v.play().catch(()=>{});}}
+  if(b.classList.contains('row')){const li=b.parentElement,o=!li.classList.contains('open');$$('#rows li.open').forEach(x=>x.classList.remove('open'));li.classList.toggle('open',o);}});
+$('#search').addEventListener('input',library);
+$('#dClose').onclick=()=>$('#dlg').close();
+$('#dlg').addEventListener('close',()=>{$('#dMedia').innerHTML='';document.body.style.overflow='';});
+$('#dlg').addEventListener('click',e=>{if(e.target===$('#dlg'))$('#dlg').close();});
+
+/* ════════ 6. 시작 ════════ */
+$('#brand').textContent=SITE.brand;document.title=SITE.brand;
+$('#nav').innerHTML=SITE.nav.map(([id,t])=>`<a href="#${id}">${esc(t)}</a>`).join('');
+$('#heroA').textContent=SITE.hero.a;$('#heroB').textContent=SITE.hero.b;
+$('#heroAfter').innerHTML=SITE.hero.after.map(t=>`<span>${esc(t)}</span>`).join('');
+if(SITE.hero.video)$('#heroFilm').innerHTML=`<video muted loop playsinline autoplay preload="metadata" src="${esc(SITE.hero.video)}"></video>`;
+$('#words').innerHTML=SITE.intro.map(t=>`<p>${t.split(' ').map(w=>`<span>${esc(w)}</span>`).join(' ')}</p>`).join('');words=$$('#words span');
+$('#track').innerHTML=SITE.panels.map((f,i,a)=>`<article class="panel"><div><p class="no">${esc(f.no)} / ${String(a.length).padStart(2,'0')}</p><h2>${esc(f.w)}</h2><p class="q">“${esc(f.q)}”</p></div><div class="body"><h3>${esc(f.h)}</h3><p>${esc(f.t)}</p></div></article>`).join('');
+$('#dots').innerHTML='<i><b></b></i>'.repeat(SITE.panels.length);
+$('#steps').innerHTML=SITE.steps.map(([n,h,p])=>`<li class="rv"><span>${esc(n)}</span><h3>${esc(h)}</h3><p>${esc(p)}</p></li>`).join('');
+$('#filters').innerHTML=[...new Set(SITE.items.flatMap(v=>v.tags))].map(t=>`<button data-f="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')+'<button id="fAll" aria-pressed="true">전체</button>';
+$('#endT').textContent=SITE.end;
+$$('.plain .head h2').forEach(h=>h.innerHTML=h.innerHTML.split(/<br\s*\/?>/i).map((x,i)=>`<span class="lm"><span class="lmi" style="--d:${(i*.1).toFixed(2)}s">${x}</span></span>`).join(''));
+buildLadder();buildCurve();buildLayers();library();rows();
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+$$('.rv').forEach((el,i)=>{el.style.transitionDelay=((i%4)*.08)+'s';io.observe(el);});
+const navIO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$('.top nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+e.target.id));}),{rootMargin:'-45% 0px -50% 0px'});
+$$('main>section[id]').forEach(s=>navIO.observe(s));
+
+scenes=$$('[data-scene]').map(el=>({el,fn:RENDER[el.dataset.scene],t:0,c:-1}));
+const relayout=()=>{layoutLadder();measure();scenes.forEach(s=>s.last=-1);};
+measure();requestAnimationFrame(tick);
+addEventListener('resize',relayout);
+document.fonts?.ready.then(relayout);      // 폰트가 늦게 뜨면 글자 폭이 달라지므로 다시 잰다
+</script>
+</body>
+</html>
