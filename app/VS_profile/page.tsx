@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'VS 프로필 사진 | STUDIO 3C',
+  title: 'VS 프로필 사진 | VENTURE SQUARE',
   robots: { index: false, follow: false },
 };
 
@@ -28,7 +28,7 @@ export default function VSProfilePage() {
   return (
     <main className="min-h-screen bg-[#f6f3ee] text-zinc-900">
       <div className="mx-auto max-w-md px-4 pb-16 pt-10">
-        <p className="text-center text-xs tracking-[0.3em] text-zinc-500">STUDIO 3C</p>
+        <p className="text-center text-xs tracking-[0.3em] text-zinc-500">VENTURE SQUARE</p>
         <h1 className="mt-6 text-center text-xl font-semibold">VS 프로필 사진</h1>
         <p className="mt-1 text-center text-sm text-zinc-600">본인 이름을 누르면 사진 폴더가 열려요</p>
 
