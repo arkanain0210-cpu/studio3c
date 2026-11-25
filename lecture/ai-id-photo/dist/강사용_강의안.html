@@ -1,0 +1,472 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<title>AI로 완성하는 나의 증명사진 & 이력서 사진 — 강사용 강의안</title><style>
+@font-face{font-family:'Pretendard';font-weight:400;src:url('../fonts/Pretendard-Regular.woff2') format('woff2');}
+@font-face{font-family:'Pretendard';font-weight:500;src:url('../fonts/Pretendard-Medium.woff2') format('woff2');}
+@font-face{font-family:'Pretendard';font-weight:600;src:url('../fonts/Pretendard-SemiBold.woff2') format('woff2');}
+@font-face{font-family:'Pretendard';font-weight:700;src:url('../fonts/Pretendard-Bold.woff2') format('woff2');}
+@font-face{font-family:'Pretendard';font-weight:800;src:url('../fonts/Pretendard-ExtraBold.woff2') format('woff2');}
+:root{
+  --ink:#1C2433;--sub:#5B6577;--line:#D9DEE6;--tint:#F4F6FA;
+  --accent:#1E8E5A;--blue:#2F62D8;--blueTint:#E8EFFD;
+  --green:#1E8E5A;--greenTint:#E3F4EB;--red:#D33F33;--redTint:#FCE9E7;
+  --amber:#C98A0B;--amberTint:#FDF3DC;
+}
+@page{
+  size:A4;margin:19mm 18mm 20mm 18mm;
+  @bottom-left{content:"강사용 강의안 · 배포 금지";font-family:Pretendard;font-size:7.5pt;color:#9AA3B2;}
+  @bottom-right{content:counter(page);font-family:Pretendard;font-size:8pt;font-weight:600;color:#7B8596;}
+}
+@page cover{margin:0;@bottom-left{content:none}@bottom-right{content:none}}
+@page plain{@bottom-left{content:none}}
+*{box-sizing:border-box;}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+body{margin:0;font-family:Pretendard,sans-serif;color:var(--ink);font-size:10pt;line-height:1.68;
+  word-break:keep-all;overflow-wrap:break-word;background:#fff;font-feature-settings:"tnum" 0;}
+p{margin:0 0 2.6mm;}
+strong{font-weight:700;}
+h1,h2,h3,h4{margin:0;line-height:1.3;font-weight:800;letter-spacing:-0.01em;}
+.page{break-before:page;}
+.nobreak{break-inside:avoid;}
+.part{display:flex;align-items:flex-end;gap:5mm;border-bottom:2.2pt solid var(--ink);padding-bottom:3mm;margin-bottom:6mm;}
+.part .num{font-size:30pt;font-weight:800;color:var(--accent);line-height:0.9;}
+.part .t small{display:block;font-size:8.5pt;font-weight:700;color:var(--sub);letter-spacing:0.12em;margin-bottom:1mm;}
+.part .t h1{font-size:19pt;}
+h2{font-size:14pt;margin:6mm 0 3mm;}
+h2 .tag{display:inline-block;font-size:8pt;font-weight:700;color:#fff;background:var(--accent);border-radius:2mm;padding:0.6mm 2.2mm;margin-right:2mm;vertical-align:3pt;}
+h3{font-size:11pt;margin:4.5mm 0 2mm;}
+.lead{font-size:10.6pt;color:#323C4E;}
+.muted{color:var(--sub);}
+.small{font-size:8.6pt;line-height:1.55;}
+.xs{font-size:7.6pt;line-height:1.45;color:var(--sub);}
+ul,ol{margin:0 0 3mm;padding-left:5mm;}
+li{margin:0.6mm 0;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:5mm;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;}
+.card{border:0.8pt solid var(--line);border-radius:3mm;padding:4mm 4.5mm;background:#fff;break-inside:avoid;}
+.card.tint{background:var(--tint);border-color:transparent;}
+.card h3{margin-top:0;}
+.callout{border-left:3pt solid var(--accent);background:var(--blueTint);padding:3.5mm 4.5mm;border-radius:0 2.5mm 2.5mm 0;margin:3mm 0 4mm;break-inside:avoid;}
+.callout.warn{border-color:var(--red);background:var(--redTint);}
+.callout.ok{border-color:var(--green);background:var(--greenTint);}
+.callout.tip{border-color:var(--amber);background:var(--amberTint);}
+.callout .h{font-weight:800;margin-bottom:1mm;display:block;}
+.callout p:last-child,.card p:last-child{margin-bottom:0;}
+table{width:100%;border-collapse:collapse;margin:2mm 0 4mm;font-size:9pt;line-height:1.5;break-inside:auto;}
+th,td{border-bottom:0.6pt solid var(--line);padding:2mm 2.2mm;text-align:left;vertical-align:top;}
+th{background:var(--tint);font-weight:700;font-size:8.6pt;color:#3A4456;border-bottom:1pt solid #C5CCD8;}
+tr{break-inside:avoid;}
+td.c,th.c{text-align:center;}
+.o{color:var(--green);font-weight:800;}
+.x{color:var(--red);font-weight:800;}
+.d{color:var(--amber);font-weight:800;}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0 0 3mm;}
+.steps>li{counter-increment:s;position:relative;padding:0 0 2.6mm 9.5mm;margin:0;}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:0.3mm;width:6.4mm;height:6.4mm;border-radius:50%;
+  background:var(--accent);color:#fff;font-weight:800;font-size:8.5pt;line-height:6.4mm;text-align:center;}
+.steps>li b{font-weight:700;}
+.path{display:inline-block;font-weight:600;background:#EEF1F6;border:0.5pt solid #D3D9E3;border-radius:1.4mm;padding:0 1.6mm;font-size:8.8pt;white-space:nowrap;}
+.key{display:inline-block;font-weight:700;font-size:8pt;border:0.8pt solid #AEB6C3;border-bottom-width:1.6pt;border-radius:1.2mm;padding:0 1.4mm;background:#fff;min-width:5mm;text-align:center;white-space:nowrap;}
+.prompt{font-size:9.2pt;background:#151C2A;color:#E9EEF7;border-radius:2.5mm;padding:3mm 4mm;margin:1.5mm 0 3mm;line-height:1.6;break-inside:avoid;}
+.prompt .lbl{display:block;font-size:7.5pt;font-weight:700;color:#8FA4C8;letter-spacing:0.08em;margin-bottom:0.8mm;}
+figure{margin:2mm 0 4mm;break-inside:avoid;}
+figure svg{display:block;width:100%;height:auto;}
+figcaption{font-size:8.2pt;color:var(--sub);margin-top:1.5mm;line-height:1.45;}
+.check{list-style:none;padding:0;margin:0 0 3mm;}
+.check li{position:relative;padding-left:7mm;margin:1.4mm 0;}
+.check li::before{content:"";position:absolute;left:0;top:0.9mm;width:4.2mm;height:4.2mm;border:1.1pt solid #7D8798;border-radius:1mm;background:#fff;}
+.write{border-bottom:0.7pt solid #AEB6C3;height:8mm;}
+.box{border:0.8pt solid #AEB6C3;border-radius:2mm;}
+.pill{display:inline-block;font-size:7.6pt;font-weight:700;border-radius:10mm;padding:0.3mm 2.2mm;background:var(--tint);color:#3A4456;margin-right:1mm;}
+.pill.red{background:var(--redTint);color:var(--red);} .pill.green{background:var(--greenTint);color:var(--green);} .pill.blue{background:var(--blueTint);color:var(--blue);} .pill.amber{background:var(--amberTint);color:#8A5E00;}
+.src{font-size:7.4pt;color:#8A93A3;line-height:1.45;margin-top:2mm;}
+.hr{height:0;border-top:0.6pt solid var(--line);margin:5mm 0;}
+.toc{list-style:none;padding:0;margin:0;}
+.toc li{display:flex;align-items:baseline;gap:3mm;padding:2.3mm 0;border-bottom:0.6pt dashed var(--line);margin:0;}
+.toc .n{font-weight:800;color:var(--accent);width:16mm;flex:none;}
+.toc .tt{font-weight:700;flex:1;}
+.toc .ds{color:var(--sub);font-size:8.6pt;}
+.badge-day{display:inline-block;font-size:8pt;font-weight:800;color:var(--accent);border:1pt solid var(--accent);border-radius:1.5mm;padding:0 1.8mm;margin-right:1.5mm;vertical-align:1pt;}
+
+.cover{page:cover;width:210mm;height:297mm;background:#F3F6F4;position:relative;padding:22mm 20mm 18mm;display:flex;flex-direction:column;}
+.cover .k{font-size:9pt;font-weight:800;color:#fff;background:#1E8E5A;border-radius:1.5mm;padding:0.8mm 2.6mm;align-self:flex-start;}
+.cover h1{font-size:28pt;line-height:1.25;margin-top:6mm;}
+.cover .s{font-size:11pt;color:#4A5568;margin-top:4mm;}
+.cover .grid{margin-top:12mm;display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+.cover .grid div{background:#fff;border-radius:3mm;padding:4mm 5mm;font-size:9.2pt;line-height:1.6;}
+.cover .grid b{display:block;font-size:8pt;color:#1E8E5A;letter-spacing:0.08em;margin-bottom:1mm;}
+.cover .foot{margin-top:auto;font-size:8.5pt;color:#6B7486;border-top:0.8pt solid #CBD3CE;padding-top:4mm;}
+.say{border:1pt dashed #1E8E5A;border-radius:2.5mm;padding:2.6mm 3.5mm 2.6mm 3.5mm;margin:2mm 0 3mm;font-size:9.3pt;background:#F6FBF8;break-inside:avoid;}
+.say span{display:inline-block;font-size:7.4pt;font-weight:800;color:#fff;background:#1E8E5A;border-radius:1mm;padding:0 1.6mm;margin-right:2mm;vertical-align:1pt;}
+table.run td{font-size:8.6pt;}
+table.run td:first-child{white-space:nowrap;font-weight:700;color:#1E8E5A;}
+.cut{color:#D33F33;font-weight:800;} .plus{color:#2F62D8;font-weight:800;}
+.meas td{height:9mm;}
+</style></head>
+<body>
+<section class="cover">
+  <div class="k">강사용 · 수강생 배포 금지</div>
+  <h1>AI로 완성하는<br>나의 증명사진 &amp; 이력서 사진</h1>
+  <p class="s">강의안 · 진행 대본 · 리허설 체크리스트</p>
+  <div class="grid">
+    <div><b>일정</b>2026. 12. 14(월), 15(화)<br>19:00–21:00 · 2회 · 총 4시간</div>
+    <div><b>장소 · 인원</b>광주시 청년지원센터 5층<br>최대 8명 · 어도비 기관계정 8석</div>
+    <div><b>결과물</b>① 여권·신분증용 413×531 JPG<br>② 이력서용 3×4cm JPG·PSD·인화판</div>
+    <div><b>핵심 메시지</b>여권은 <u>찍는</u> 기술,<br>이력서는 <u>다듬는</u> 기술</div>
+  </div>
+  <div style="margin-top:10mm"><svg viewBox="0 -4 700 100" xmlns="http://www.w3.org/2000/svg"><text x="0" y="18" font-family="Pretendard" font-size="14" font-weight="800" fill="#1C2433" text-anchor="start" >1회차 12.14(월)</text><rect x="0" y="30" width="27.166666666666664" height="44" rx="5" fill="#2F62D8"/>
+      
+      <text x="0" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:00</text><rect x="29.166666666666664" y="30" width="85.5" height="44" rx="5" fill="#2F62D8"/>
+      <text x="72.91666666666666" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >규정·퀴즈</text>
+      <rect x="116.66666666666666" y="30" width="114.66666666666666" height="44" rx="5" fill="#1E8E5A"/>
+      <text x="175" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >셀프 촬영</text>
+      <text x="116.66666666666666" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:20</text><rect x="233.33333333333331" y="30" width="56.33333333333333" height="44" rx="5" fill="#7B8596"/>
+      <text x="262.5" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >전송·로그인</text>
+      <text x="233.33333333333331" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:40</text><rect x="291.66666666666663" y="30" width="56.33333333333333" height="44" rx="5" fill="#D33F33"/>
+      <text x="320.8333333333333" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >여권 자르기</text>
+      <text x="291.66666666666663" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:50</text><rect x="349.99999999999994" y="30" width="56.33333333333333" height="44" rx="5" fill="#B9C0CA"/>
+      <text x="379.16666666666663" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >휴식</text>
+      <text x="349.99999999999994" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:00</text><rect x="408.33333333333326" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="466.6666666666666" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >기본 보정</text>
+      <text x="408.33333333333326" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:10</text><rect x="524.9999999999999" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="583.3333333333333" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >AI 마스크·제거</text>
+      <text x="524.9999999999999" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:30</text><rect x="641.6666666666665" y="30" width="56.33333333333333" height="44" rx="5" fill="#2F62D8"/>
+      <text x="670.8333333333331" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >마무리</text>
+      <text x="698" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="end" >21:00</text></svg></div>
+  <div style="margin-top:4mm"><svg viewBox="0 -4 700 100" xmlns="http://www.w3.org/2000/svg"><text x="0" y="18" font-family="Pretendard" font-size="14" font-weight="800" fill="#1C2433" text-anchor="start" >2회차 12.15(화)</text><rect x="0" y="30" width="27.166666666666664" height="44" rx="5" fill="#2F62D8"/>
+      
+      <text x="0" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:00</text><rect x="29.166666666666664" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="87.5" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >배경 교체</text>
+      <rect x="145.83333333333331" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="204.16666666666663" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >생성형 채우기·확장</text>
+      <text x="145.83333333333331" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:25</text><rect x="262.5" y="30" width="85.5" height="44" rx="5" fill="#D33F33"/>
+      <text x="306.25" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >규격·인화판</text>
+      <text x="262.5" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:45</text><rect x="350" y="30" width="27.166666666666664" height="44" rx="5" fill="#B9C0CA"/>
+      
+      <text x="350" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:00</text><rect x="379.1666666666667" y="30" width="202.16666666666669" height="44" rx="5" fill="#1E8E5A"/>
+      <text x="481.25" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >무료 AI 비교 실습</text>
+      <rect x="583.3333333333334" y="30" width="68" height="44" rx="5" fill="#2F62D8"/>
+      <text x="618.3333333333334" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >윤리 토론</text>
+      <text x="583.3333333333334" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:40</text><rect x="653.3333333333334" y="30" width="44.666666666666664" height="44" rx="5" fill="#2F62D8"/>
+      <text x="676.6666666666667" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >마무리</text>
+      <text x="698" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="end" >21:00</text></svg></div>
+  <div class="foot">강사 유지환 · 자료 기준일 2026년 11월 25일 · 수강생 워크북(별도 PDF)과 함께 사용</div>
+</section>
+
+<!-- ═════════════ 0. 먼저 읽기 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">00</div><div class="t"><small>먼저 읽기</small><h1>이 강의를 설계한 이유</h1></div></div>
+  <div class="callout warn"><span class="h">기획 단계에서 확인된 사실: 여권 사진은 AI 보정 금지</span>
+    <p>외교부 여권안내 「여권 사진」: “사진 편집 프로그램, 사진 필터 기능 등을 사용하여 임의로 보정된 사진(AI를 활용한 편집·가공·합성·창조 제작물 포함)은 허용 불가”. 포토샵으로 배경을 지우고 흰 배경을 합성한 사진도 반려 사례로 명시되어 있습니다.</p></div>
+  <p>그래서 처음 계획서의 “증명사진·이력서 사진을 AI로 보정”을 이렇게 나눴습니다.</p>
+  <table>
+    <tr><th style="width:24%">사진</th><th>수업에서 하는 것</th><th style="width:30%">수업의 무게</th></tr>
+    <tr><td><b>여권·신분증</b></td><td>규정 이해 → 흰 배경 셀프 촬영 → 자르기·크기 조정만 → 외교부 공식 도구로 검증</td><td>1회차 전반 50분</td></tr>
+    <tr><td><b>이력서</b></td><td>라이트룸 AI(노이즈 제거, 사람 마스크, 생성형 제거) → 포토샵 생성형 AI(배경, 옷깃, 확장) → 무료 AI 비교</td><td>나머지 전부</td></tr>
+  </table>
+  <p>이 반전이 오히려 강의의 <b>훅</b>이 됩니다. “AI 사진 보정 강의인데 첫 시간에 ‘여권 사진은 AI 금지’부터 배운다”는 점이 수강생 기억에 남고, PART 6 윤리 토론까지 자연스럽게 이어집니다.</p>
+
+  <h2>학습 목표</h2>
+  <ol class="steps">
+    <li>사진의 용도(여권·이력서·SNS)에 따라 허용되는 보정 범위를 구분할 수 있다.</li>
+    <li>스마트폰으로 외교부 규격에 맞는 사진을 촬영하고 규격 파일로 만들 수 있다.</li>
+    <li>라이트룸·포토샵의 AI 기능으로 이력서 사진을 ‘실물 범위’ 안에서 보정할 수 있다.</li>
+    <li>무료 AI 도구의 장단점을 비교하고, 얼굴이 바뀌었는지 스스로 판별할 수 있다.</li>
+  </ol>
+
+  <h2>강의계획서와 달라진 점</h2>
+  <p class="small">시간 구조(1회차 30분+90분, 2회차 60+40+20분)는 제출한 계획서와 같습니다. 바뀐 것은 내용 문구 하나입니다. 센터에 이미 제출했다면 아래 문장으로 수정본을 보내 주세요. 수정 문구는 부록 A에 있습니다.</p>
+  <table class="small">
+    <tr><th style="width:18%"></th><th>제출본</th><th>권장 수정</th></tr>
+    <tr><td>강의내용</td><td>“…포토샵 생성형 AI로 배경 교체와 옷매무새 정리, 규격 크롭을 진행합니다.”</td><td>“…여권·신분증 사진은 외교부 규정(AI 보정 불가)에 맞게 촬영과 규격 크롭으로, 이력서 사진은 포토샵 생성형 AI로 배경 교체와 옷매무새 정리를 진행합니다.”</td></tr>
+  </table>
+</section>
+
+<!-- ═════════════ 1. 준비 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">01</div><div class="t"><small>준비</small><h1>강의 전 체크리스트</h1></div></div>
+  <h2><span class="tag">D-14</span>센터에 확인할 것</h2>
+  <ul class="check">
+    <li>수강생 PC: 노트북 지참인지 센터 대여인지, <b>사양</b>(포토샵 권장 RAM 16GB 이상, GPU 유무)</li>
+    <li>어도비 기관계정: 수강생 8석 외에 <b>강사 계정이 따로 있는지</b>, 계정 전달 방식(ID 배정/초대 메일)</li>
+    <li>어도비 <b>생성형 크레딧 한도</b>와 <b>웹 버전</b>(포토샵 웹·라이트룸 웹) 사용 가능 여부</li>
+    <li>Wi-Fi 비밀번호와 동시 접속 품질(8명이 동시에 사진 업로드)</li>
+    <li>빔프로젝터 입력 단자(HDMI/USB-C), 스크린 크기</li>
+    <li>촬영 공간: <b>흰 벽</b>이 있는지, 창가 자리가 있는지, 저녁 7시 이후 조명 상태</li>
+    <li>워크북 컬러 출력 가능 여부 (8부 + 여분 2부, A4 양면)</li>
+    <li>센터 결과보고용 강의 사진 촬영 방식과 수강생 동의 절차</li>
+  </ul>
+  <h2><span class="tag">D-7</span>리허설</h2>
+  <ul class="check">
+    <li>2장 「리허설 셀프 체크」의 시연을 모두 실제로 해 보고 시간을 적는다</li>
+    <li>수강생과 같은 권한의 계정으로 생성형 채우기·생성형 확장·생성형 제거가 되는지 확인한다</li>
+    <li>워크북 속 메뉴 이름이 현재 버전 화면과 같은지 확인하고, 다르면 수업 중 말로 보충할 목록을 만든다</li>
+    <li>연습용 샘플 사진 3종을 준비한다 (아래 표)</li>
+  </ul>
+  <table class="small">
+    <tr><th style="width:24%">샘플</th><th>용도</th><th style="width:40%">구하는 법</th></tr>
+    <tr><td>A. 잘 찍힌 사진</td><td>여권 자르기, 기본 보정 시연</td><td rowspan="3">강사 본인 사진 또는 <b>서면 동의</b>를 받은 지인 사진. 가상 인물이 필요하면 Firefly로 생성하고 수업 중 “AI 생성 샘플”이라고 밝힌다</td></tr>
+    <tr><td>B. 어둡고 노란 실내 사진</td><td>흰색 균형·노이즈 제거 시연</td></tr>
+    <tr><td>C. 옷깃이 흐트러지고 어깨가 잘린 사진</td><td>생성형 채우기·확장 시연</td></tr>
+  </table>
+  <h2><span class="tag">D-3</span>최신 정보 점검</h2>
+  <ul class="check small">
+    <li>외교부 여권 사진 규정과 ‘온라인 여권 사진 검증·크기 조정’ 메뉴가 그대로인지</li>
+    <li>Gemini·ChatGPT 무료 계정으로 사진 편집이 되는지, 하루 한도가 얼마인지 (직접 3회 이상 시도)</li>
+    <li>Adobe Express 무료 플랜 ‘배경 제거’ 동작 확인</li>
+  </ul>
+</section>
+
+<section class="page">
+  <h2 style="margin-top:0"><span class="tag">D-1</span>챙길 것</h2>
+  <table>
+    <tr><th style="width:32%">물품</th><th class="c" style="width:10%">수량</th><th>쓰임</th></tr>
+    <tr><td>흰 배경지(롤 1.35m 폭) 또는 흰 전지 + 마스킹테이프</td><td class="c">1</td><td>흰 벽이 없거나 얼룩이 있을 때</td></tr>
+    <tr><td>LED 조명(스탠드형)</td><td class="c">2</td><td>저녁 강의라 창가 자연광이 없음. 얼굴 양쪽 45°</td></tr>
+    <tr><td>흰 폼보드(A2) 반사판</td><td class="c">2</td><td>그늘진 쪽 얼굴 밝히기, 안경 반사 실험</td></tr>
+    <tr><td>스마트폰 삼각대 + 블루투스 리모컨</td><td class="c">2</td><td>촬영 스테이션 2곳</td></tr>
+    <tr><td>줄자, 바닥 표시용 테이프</td><td class="c">1</td><td>벽에서 1m, 카메라 1.5m 위치 표시</td></tr>
+    <tr><td>USB-C·라이트닝 케이블, OTG 젠더, 카드 리더</td><td class="c">각 2</td><td>사진 전송 실패 대비</td></tr>
+    <tr><td>멀티탭</td><td class="c">2</td><td>노트북 충전</td></tr>
+    <tr><td>강사 노트북 + 여분 노트북(있으면)</td><td class="c">1~2</td><td>수강생 PC 고장 대비</td></tr>
+    <tr><td>샘플 사진 USB</td><td class="c">1</td><td>얼굴 공개를 원치 않는 수강생용</td></tr>
+    <tr><td>워크북 출력본</td><td class="c">10</td><td>8부 + 여분</td></tr>
+    <tr><td>사진 촬영·활용 동의서</td><td class="c">10</td><td>부록 B 문안</td></tr>
+    <tr><td>만족도 설문 QR (센터 양식 확인)</td><td class="c">1</td><td>2회차 마지막</td></tr>
+  </table>
+  <h2><span class="tag">당일</span>30분 전 세팅</h2>
+  <ol class="steps small">
+    <li>촬영 스테이션 2곳 세팅: 흰 배경 → 바닥에 1m·1.5m 테이프 → 조명 2개 45° → 삼각대 눈높이</li>
+    <li>강사 PC를 프로젝터에 연결하고 라이트룸·포토샵·브라우저(Gemini, ChatGPT, Express, 외교부 페이지) 탭을 미리 열어 둔다</li>
+    <li>수강생 자리마다 워크북, 동의서, 계정 안내 쪽지를 놓는다</li>
+    <li>Wi-Fi 정보를 화이트보드에 적는다</li>
+    <li>수강생 PC 한 대에서 실제 로그인과 사진 가져오기를 해 본다</li>
+  </ol>
+  <div class="callout tip"><span class="h">저녁 강의 조명 주의</span><p>12월 19시는 완전히 어둡습니다. 워크북의 ‘창가 자연광’ 그림 대신 <b>LED 2개를 얼굴 양쪽 45°</b>에 두고, 천장 형광등은 가능하면 끄거나 촬영 구역만 어둡게 하면 그림자가 줄어듭니다.</p></div>
+</section>
+
+<!-- ═════════════ 2. 리허설 셀프 체크 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">02</div><div class="t"><small>리허설</small><h1>내가 이 강의를 할 수 있는지 확인하기</h1></div></div>
+  <p>아래 시연을 <b>수강생 속도로 말하면서</b> 해 보고 시간을 재세요. 목표 시간의 1.5배를 넘는 항목은 대본을 줄이거나 미리 만들어 둔 결과물을 보여 주는 방식으로 바꿉니다.</p>
+  <table class="meas">
+    <tr><th>시연</th><th class="c" style="width:12%">목표</th><th class="c" style="width:13%">1차 측정</th><th class="c" style="width:13%">2차 측정</th><th class="c" style="width:9%">OK</th></tr>
+    <tr><td>라이트룸: 가져오기 → 35:45 자르기 → 531px 내보내기</td><td class="c">4분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>외교부 온라인 여권 사진 검증에 파일 올려 보기</td><td class="c">2분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>라이트룸: 흰색 균형 → 노출 → 밝은/어두운 영역 → 노이즈 제거</td><td class="c">6분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>라이트룸: 사람 마스크(피부·공막·홍채) + 생성형 제거 2곳</td><td class="c">7분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>라이트룸: 사전 설정 저장 → 2000px JPG 내보내기</td><td class="c">2분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>포토샵: 레이어 복제 → 배경 제거 → 머리카락 다듬기 → 단색 칠 레이어</td><td class="c">6분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>포토샵: 생성형 채우기(옷깃) + 파트너 모델로 한 번 더</td><td class="c">5분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>포토샵: 생성형 확장 → 3×4cm 300ppi 크롭 → 내보내기</td><td class="c">5분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>포토샵: 4×6인치 인화판 (미리 만든 템플릿 보여 주기)</td><td class="c">3분</td><td></td><td></td><td class="c">☐</td></tr>
+    <tr><td>Gemini·ChatGPT·Express로 같은 사진 배경 교체</td><td class="c">8분</td><td></td><td></td><td class="c">☐</td></tr>
+  </table>
+  <h2>진행 가능 판단 (Go / No-go)</h2>
+  <ul class="check">
+    <li>수강생 권한 계정에서 생성형 기능 3종(채우기·확장·제거)이 모두 작동한다 → <b>안 되면</b>: 강사 시연 + 무료 도구 비중 확대</li>
+    <li>수강생 PC에서 포토샵이 5초 안에 사진을 연다 → <b>안 되면</b>: 포토샵 웹 버전 또는 2인 1대</li>
+    <li>무료 AI 3종 중 2개 이상이 한국어 지시로 사진을 편집한다 → <b>안 되면</b>: 되는 도구만 비교하고, 나머지는 강사가 미리 만든 결과로 보여 준다</li>
+    <li>촬영 공간에서 그림자 없는 흰 배경이 나온다 → <b>안 되면</b>: 배경지 + 조명 위치를 다시 잡는다</li>
+    <li>워크북 메뉴 이름과 실제 화면이 다른 곳을 모두 메모했다</li>
+  </ul>
+</section>
+
+<!-- ═════════════ 3. 1회차 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">03</div><div class="t"><small>1회차 · 12.14(월)</small><h1>찍는 기술과 라이트룸</h1></div></div>
+  <figure><svg viewBox="0 -4 700 100" xmlns="http://www.w3.org/2000/svg"><text x="0" y="18" font-family="Pretendard" font-size="14" font-weight="800" fill="#1C2433" text-anchor="start" >1회차 흐름</text><rect x="0" y="30" width="27.166666666666664" height="44" rx="5" fill="#2F62D8"/>
+      
+      <text x="0" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:00</text><rect x="29.166666666666664" y="30" width="85.5" height="44" rx="5" fill="#2F62D8"/>
+      <text x="72.91666666666666" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >규정·퀴즈</text>
+      <rect x="116.66666666666666" y="30" width="114.66666666666666" height="44" rx="5" fill="#1E8E5A"/>
+      <text x="175" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >셀프 촬영</text>
+      <text x="116.66666666666666" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:20</text><rect x="233.33333333333331" y="30" width="56.33333333333333" height="44" rx="5" fill="#7B8596"/>
+      <text x="262.5" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >전송·로그인</text>
+      <text x="233.33333333333331" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:40</text><rect x="291.66666666666663" y="30" width="56.33333333333333" height="44" rx="5" fill="#D33F33"/>
+      <text x="320.8333333333333" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >여권 자르기</text>
+      <text x="291.66666666666663" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:50</text><rect x="349.99999999999994" y="30" width="56.33333333333333" height="44" rx="5" fill="#B9C0CA"/>
+      <text x="379.16666666666663" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >휴식</text>
+      <text x="349.99999999999994" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:00</text><rect x="408.33333333333326" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="466.6666666666666" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >기본 보정</text>
+      <text x="408.33333333333326" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:10</text><rect x="524.9999999999999" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="583.3333333333333" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >AI 마스크·제거</text>
+      <text x="524.9999999999999" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:30</text><rect x="641.6666666666665" y="30" width="56.33333333333333" height="44" rx="5" fill="#2F62D8"/>
+      <text x="670.8333333333331" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >마무리</text>
+      <text x="698" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="end" >21:00</text></svg></figure>
+  <table class="run">
+    <tr><th style="width:12%">시간</th><th style="width:30%">강사</th><th>수강생</th><th style="width:24%">체크포인트</th></tr>
+    <tr><td>19:00</td><td>인사, 강사 소개(작업 사진 2~3장), 동의서 안내</td><td>동의서 작성, 워크북 펼치기</td><td>동의서 8장 회수</td></tr>
+    <tr><td>19:05</td><td>“사진 3종 3규칙”, 외교부 문구 낭독, <b>반려 퀴즈</b>(워크북 6쪽 그림을 가리고 한 장씩 보여 주기)</td><td>OX 퀴즈, 워크북 PART 1</td><td>7번(배경 합성) 정답률 확인</td></tr>
+    <tr><td>19:20</td><td>스테이션 2곳 촬영 운영. 조당 5분씩 교대</td><td>2인 1조 촬영 미션</td><td>전원 여권용·이력서용 각 3컷 이상</td></tr>
+    <tr><td>19:40</td><td>사진 전송 도움, 계정 로그인 안내</td><td>원본 화질로 PC 전송, 라이트룸 로그인</td><td>전원 라이트룸에 사진 1장 이상</td></tr>
+    <tr><td>19:50</td><td>35:45 자르기 → 531px 내보내기 시연, 외교부 검증 도구 소개</td><td>따라 하기</td><td>여권용 JPG 저장 확인</td></tr>
+    <tr><td>20:00</td><td colspan="3">휴식 10분 · 진도가 늦은 수강생 개별 도움</td></tr>
+    <tr><td>20:10</td><td>기본 보정 순서 시연 (샘플 B로 극적인 전후 보여 주기)</td><td>내 사진에 적용, 값 기록</td><td>흰색 균형 스포이드 사용 여부</td></tr>
+    <tr><td>20:30</td><td>사람 마스크 부위별 시연, 생성형 제거, “남겨 둘 것” 강조</td><td>피부·공막·홍채 3부위 이상 조정</td><td>텍스처 −30 이하 수강생 없는지</td></tr>
+    <tr><td>20:50</td><td>사전 설정 저장, 2000px 내보내기, 파일 백업, 2회차 예고</td><td>내보내기, 휴대폰으로 전송</td><td>전원 이력서용 JPG 보유</td></tr>
+  </table>
+</section>
+
+<section class="page">
+  <h2 style="margin-top:0">1회차 핵심 멘트</h2>
+  <h3>오프닝 (19:00)</h3>
+  <div class="say"><span>말하기</span>“오늘 AI로 증명사진 만드는 법을 배우러 오셨죠. 그런데 시작 전에 하나 여쭤볼게요. 포토샵으로 배경 지우고 흰색 깔아서 만든 여권 사진, 받아 줄까요? …안 받아 줍니다. 외교부 규정에 ‘AI를 활용한 편집·합성 사진 불가’라고 적혀 있어요. 그래서 오늘은 AI를 쓰는 법과 함께 <b>AI를 쓰면 안 되는 곳</b>도 배웁니다.”</div>
+  <h3>규정과 퀴즈 (19:05)</h3>
+  <div class="say"><span>말하기</span>“여권 사진은 찍는 순간이 완성이에요. 밝기를 올리는 것도 보정입니다. 대신 이력서 사진은 여러분 마음대로… 가 아니라, <b>면접장에서 처음 만난 사람이 사진과 나를 같은 사람으로 알아보는 범위</b>까지만 다듬을 거예요.”</div>
+  <p class="small">퀴즈 진행: 그림을 한 장씩 보여 주고 손가락으로 O/X를 표시하게 합니다. 8번(정상)에서 “이것도 X인 줄 알았다”는 반응이 나오면 “규정을 알면 사진관 없이도 된다”로 연결합니다.</p>
+  <h3>촬영 (19:20)</h3>
+  <ul class="small">
+    <li>스테이션 A·B에 2개 조씩 배치. 대기 조는 워크북 촬영 체크리스트를 미리 읽습니다.</li>
+    <li>강사는 두 스테이션을 오가며 <b>카메라 높이</b>와 <b>벽과의 거리</b>만 바로잡습니다. 나머지는 체크리스트에 맡깁니다.</li>
+    <li>얼굴 공개를 원치 않는 수강생은 촬영자 역할만 하고 샘플 사진 USB를 받습니다.</li>
+  </ul>
+  <div class="say"><span>말하기</span>“팔 뻗어서 찍은 셀카는 코가 커 보여요. 2미터 떨어져서 2배 줌, 이게 사진관 비율입니다.”</div>
+  <h3>여권 자르기 (19:50)</h3>
+  <div class="say"><span>말하기</span>“여권 사진은 여기까지만 하고 끝입니다. 사진이 어두우면 슬라이더 말고 다시 찍으세요. 진짜 그게 제일 빠릅니다.”</div>
+  <h3>AI 사람 마스크 (20:30)</h3>
+  <div class="say"><span>말하기</span>“예전엔 피부만 고르려면 붓으로 10분을 칠했는데, 이제는 체크 한 번이에요. 대신 <b>텍스처를 −30 밑으로 내리면</b> 사람이 마네킹이 됩니다. 이력서 사진은 ‘피부 좋은 날의 나’까지만이에요.”</div>
+  <div class="say"><span>말하기</span>“점이나 흉터는 지우지 않길 권해요. 면접관이 ‘아, 사진의 그분이구나’ 하고 알아보는 단서니까요.”</div>
+  <h3>마무리 (20:50)</h3>
+  <div class="say"><span>말하기</span>“내일은 오늘 만든 이력서 사진으로 포토샵 생성형 AI를 써 봅니다. 오늘 파일 꼭 휴대폰으로 한 부 보내 두세요. 공용 PC는 내일 다른 상태일 수 있어요.”</div>
+</section>
+
+<!-- ═════════════ 4. 2회차 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">04</div><div class="t"><small>2회차 · 12.15(화)</small><h1>포토샵 생성형 AI와 무료 AI 비교</h1></div></div>
+  <figure><svg viewBox="0 -4 700 100" xmlns="http://www.w3.org/2000/svg"><text x="0" y="18" font-family="Pretendard" font-size="14" font-weight="800" fill="#1C2433" text-anchor="start" >2회차 흐름</text><rect x="0" y="30" width="27.166666666666664" height="44" rx="5" fill="#2F62D8"/>
+      
+      <text x="0" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:00</text><rect x="29.166666666666664" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="87.5" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >배경 교체</text>
+      <rect x="145.83333333333331" y="30" width="114.66666666666666" height="44" rx="5" fill="#C98A0B"/>
+      <text x="204.16666666666663" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >생성형 채우기·확장</text>
+      <text x="145.83333333333331" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:25</text><rect x="262.5" y="30" width="85.5" height="44" rx="5" fill="#D33F33"/>
+      <text x="306.25" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >규격·인화판</text>
+      <text x="262.5" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >19:45</text><rect x="350" y="30" width="27.166666666666664" height="44" rx="5" fill="#B9C0CA"/>
+      
+      <text x="350" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:00</text><rect x="379.1666666666667" y="30" width="202.16666666666669" height="44" rx="5" fill="#1E8E5A"/>
+      <text x="481.25" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >무료 AI 비교 실습</text>
+      <rect x="583.3333333333334" y="30" width="68" height="44" rx="5" fill="#2F62D8"/>
+      <text x="618.3333333333334" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >윤리 토론</text>
+      <text x="583.3333333333334" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="start" >20:40</text><rect x="653.3333333333334" y="30" width="44.666666666666664" height="44" rx="5" fill="#2F62D8"/>
+      <text x="676.6666666666667" y="57" font-family="Pretendard" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle" >마무리</text>
+      <text x="698" y="92" font-family="Pretendard" font-size="10.5" font-weight="600" fill="#5B6577" text-anchor="end" >21:00</text></svg></figure>
+  <table class="run">
+    <tr><th style="width:12%">시간</th><th style="width:30%">강사</th><th>수강생</th><th style="width:24%">체크포인트</th></tr>
+    <tr><td>19:00</td><td>어제 결과 2~3명 화면 공유(동의자만), 오늘 목표</td><td>어제 JPG 열기</td><td>파일 없는 수강생 → 샘플 A</td></tr>
+    <tr><td>19:05</td><td>레이어 개념 → 배경 제거 → 머리카락 다듬기 → 단색 칠 레이어</td><td>따라 하기, 배경색 고르기</td><td>인물 레이어가 칠 레이어 위에 있는지</td></tr>
+    <tr><td>19:25</td><td>생성형 채우기(샘플 C 옷깃), 파트너 모델 비교 시연, 생성형 확장</td><td>내 사진에서 1곳 이상 생성형 채우기</td><td><b>선택 영역에 얼굴 포함 금지</b></td></tr>
+    <tr><td>19:45</td><td>3cm×4cm×300 크롭, 내보내기, 인화판 템플릿 보여 주기</td><td>이력서 JPG·PSD 저장</td><td>354×472px 확인</td></tr>
+    <tr><td>20:00</td><td colspan="3">휴식 5분 · 구글 계정 로그인 미리 해 두게 안내</td></tr>
+    <tr><td>20:05</td><td>무료 도구 3종 소개(5분) → 개인정보 설정 안내 → 프롬프트 ① 실습 → 얼굴 6곳 체크 시연</td><td>도구 3~4개로 같은 미션, 기록표 작성</td><td>기록표 2줄 이상 채움</td></tr>
+    <tr><td>20:40</td><td>규정 4가지 설명(5분), Q1·Q2 토론</td><td>짝 토론 후 2명 발표</td><td>“실물 범위” 기준을 자기 말로</td></tr>
+    <tr><td>20:52</td><td>최종 체크리스트, <b>계정 사진 삭제·로그아웃 확인</b>, 설문</td><td>체크리스트, 파일 정리</td><td>8명 전원 로그아웃 확인</td></tr>
+  </table>
+  <div class="callout tip"><span class="h">무료 AI 비교 실습 운영 팁</span><p>8명이 동시에 같은 서비스를 쓰면 한도에 걸리거나 느려질 수 있습니다. 1~4번 자리는 Gemini부터, 5~8번 자리는 ChatGPT부터 시작하게 순서를 엇갈리게 하세요.</p></div>
+</section>
+
+<section class="page">
+  <h2 style="margin-top:0">2회차 핵심 멘트</h2>
+  <h3>배경 교체 (19:05)</h3>
+  <div class="say"><span>말하기</span>“어제 배운 대로라면 이 작업을 여권 사진에 하면 바로 반려예요. 오늘은 <b>이력서 사진만</b>입니다. 배경색은 지원하는 회사 홈페이지 색감을 떠올려 보세요. 금융권이면 연하늘, 디자인 회사면 연회색처럼요.”</div>
+  <h3>생성형 채우기 (19:25)</h3>
+  <div class="say"><span>말하기</span>“선택한 영역 안은 AI가 <b>새로 그립니다</b>. 턱이 1mm만 걸려도 턱선이 바뀌어요. 옷깃은 턱 아래부터 잡으세요.”</div>
+  <div class="say"><span>말하기</span>“같은 선택 영역에 Firefly랑 파트너 모델을 각각 돌려 볼게요. 어느 쪽이 더 자연스러운지 손 들어 볼까요? 정답은 없고, 사진마다 다릅니다. 대신 파트너 모델은 크레딧을 더 씁니다.”</div>
+  <h3>무료 AI 비교 (20:05)</h3>
+  <div class="say"><span>말하기</span>“여기서부터는 집에서도 할 수 있는 방법이에요. 그런데 업로드 전에 하나만요. 얼굴 사진은 민감한 개인정보입니다. 학습에 쓰지 않도록 하는 설정을 먼저 확인하고 올리세요.”</div>
+  <div class="say"><span>말하기</span>“‘더 예쁘게 해 줘’라고 하면 AI는 다른 사람을 그립니다. 바꿀 것과 바꾸지 말 것을 같이 말해 주세요. 워크북 프롬프트 ①번 그대로 쓰시면 됩니다.”</div>
+  <p class="small">얼굴 6곳 체크 시연: 원본과 결과를 같은 크기로 띄우고 <span class="key">Alt</span>+<span class="key">Tab</span>으로 빠르게 번갈아 보여 주면 미세한 차이(눈꼬리, 콧볼)가 잘 보입니다. 미리 ‘얼굴이 바뀐 결과’ 예시 1장을 준비해 두면 좋습니다.</p>
+  <h3>윤리 토론 (20:40)</h3>
+  <div class="say"><span>말하기</span>“법은 AI 표시 의무를 서비스 회사에 지웠어요. 그런데 그 표시는 여러분 파일에도 남을 수 있습니다. 결국 ‘이 사진으로 면접장에 들어갈 수 있나’는 여러분이 판단할 몫이에요.”</div>
+  <p class="small">토론 정리 기준: <b>일시적인 것(뾰루지·조명·배경)은 정리, 오래가는 것(얼굴형·눈·점)은 유지.</b> 수강생이 이 문장을 자기 말로 말하게 하는 것이 목표입니다.</p>
+  <h3>마무리 (20:52)</h3>
+  <div class="say"><span>말하기</span>“기관계정은 다음 수업 수강생이 그대로 씁니다. 라이트룸에 올린 내 사진 꼭 지우고, 로그아웃까지 하고 가세요. 저도 한 분씩 확인하겠습니다.”</div>
+</section>
+
+<!-- ═════════════ 5. 문제 해결 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">05</div><div class="t"><small>대응</small><h1>막힐 때와 계획이 틀어질 때</h1></div></div>
+  <h2>자주 막히는 지점</h2>
+  <table class="small">
+    <tr><th style="width:28%">증상</th><th style="width:28%">흔한 원인</th><th>해결</th></tr>
+    <tr><td>PC로 옮긴 사진이 흐릿하다</td><td>메신저 기본 전송이 압축</td><td>‘원본’ 옵션 켜서 다시 보내기, 케이블·클라우드 사용</td></tr>
+    <tr><td>아이폰 사진이 안 열린다</td><td>HEIC 형식</td><td>라이트룸은 대부분 열림. 포토샵에서 안 되면 라이트룸에서 JPG로 내보낸 뒤 사용</td></tr>
+    <tr><td>사람 마스크에 사람이 안 잡힌다</td><td>얼굴이 너무 작거나 어두움</td><td>‘피사체 선택’으로 대체하거나 다른 컷 사용</td></tr>
+    <tr><td>노이즈 제거 버튼이 비활성</td><td>파일 형식·버전 제한</td><td>세부 패널의 휘도 슬라이더로 대체</td></tr>
+    <tr><td>생성형 버튼이 회색이거나 오류</td><td>로그인 풀림, 인터넷, 크레딧 소진</td><td>로그인 상태 확인 → Wi-Fi 확인 → 강사 계정 시연으로 전환</td></tr>
+    <tr><td>상황별 작업 표시줄이 안 보인다</td><td>꺼져 있음</td><td><span class="path">창 → 상황별 작업 표시줄</span></td></tr>
+    <tr><td>배경 제거 후 머리카락이 지저분하다</td><td>배경과 머리 색 대비가 낮음</td><td>선택 및 마스크 → 머리카락 다듬기, 가장자리 다듬기 브러시</td></tr>
+    <tr><td>생성형 채우기 뒤 얼굴이 바뀌었다</td><td>선택 영역에 얼굴 포함</td><td>생성 레이어 삭제 → 턱 아래부터 다시 선택</td></tr>
+    <tr><td>내보낸 크기가 413×531이 아니다</td><td>자르기 비율이 35:45가 아님</td><td>자르기 비율 다시 입력, 또는 외교부 크기 조정 도구 사용</td></tr>
+    <tr><td>무료 AI가 사진 편집을 거절한다</td><td>인물 사진 정책, 한도 초과</td><td>다른 도구로 넘어가기. 붙잡지 않기</td></tr>
+  </table>
+  <h2>계획 B</h2>
+  <table class="small">
+    <tr><th style="width:28%">상황</th><th>대응</th></tr>
+    <tr><td>Wi-Fi 불안정</td><td>강사 휴대폰 핫스팟(2~3명). 무료 AI 실습은 강사 시연 + 기록표를 ‘예측’으로 바꿔 진행</td></tr>
+    <tr><td>수강생 PC가 포토샵을 못 돌린다</td><td>포토샵 웹 버전 → 그래도 안 되면 2인 1대, 한 명이 조작하고 한 명이 체크리스트</td></tr>
+    <tr><td>크레딧 소진</td><td>생성형 실습을 1인 1회로 제한하고 나머지는 강사 시연. 2회차 시작 전에 남은 크레딧 확인</td></tr>
+    <tr><td>수강생이 8명 미만</td><td>남는 시간은 ‘＋’ 블록으로 채운다 (아래)</td></tr>
+    <tr><td>사진 촬영이 늦어진다</td><td>19:45에 촬영 종료. 못 찍은 수강생은 샘플 사진으로 진행하고 2회차 시작 전 5분 추가 촬영</td></tr>
+  </table>
+  <h2>시간 조절</h2>
+  <div class="grid2 small">
+    <div class="card"><span class="cut">✂ 줄일 수 있는 블록</span><ul style="margin:1.5mm 0 0"><li>외교부 검증 도구는 화면만 보여 주기 (−2분)</li><li>파트너 모델 비교 생략 (−3분)</li><li>인화판은 완성본만 보여 주기 (−3분)</li><li>무료 AI는 2종만 (−8분)</li></ul></div>
+    <div class="card"><span class="plus">＋ 늘릴 수 있는 블록</span><ul style="margin:1.5mm 0 0"><li>라이트룸 렌즈 흐림 효과로 SNS 프로필 버전 만들기</li><li>같은 사진으로 배경색 3종 만들어 비교</li><li>Firefly로 ‘AI 생성 인물’과 실제 사진 구별 퀴즈</li></ul></div>
+  </div>
+</section>
+
+<!-- ═════════════ 6. 예상 질문 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">06</div><div class="t"><small>Q&amp;A</small><h1>예상 질문과 답</h1></div></div>
+  <table class="small">
+    <tr><th style="width:36%">질문</th><th>답의 요지</th></tr>
+    <tr><td>사진관 여권 사진도 보정하지 않나요?</td><td>외교부 기준은 ‘임의 보정 불가’입니다. 반려되면 불편은 신청자 몫이니, 사진관에도 “여권용은 보정 없이”라고 말하는 편이 안전합니다.</td></tr>
+    <tr><td>셀카로 찍은 여권 사진도 되나요?</td><td>됩니다. 외교부는 본인이 직접 찍은 사진도 규격에 맞으면 사용할 수 있다고 안내합니다.</td></tr>
+    <tr><td>주민등록증·운전면허증도 같은 규칙인가요?</td><td>크기는 3.5×4.5cm가 많지만 세부 기준은 기관마다 다를 수 있습니다. 발급 기관 안내를 확인하라고 안내합니다.</td></tr>
+    <tr><td>이력서 사진을 꼭 넣어야 하나요?</td><td>회사가 요구할 때만 냅니다. 채용절차법은 직무와 무관한 용모 등 신체 정보 요구를 금지하고, 공공기관은 블라인드 채용으로 사진을 받지 않습니다.</td></tr>
+    <tr><td>웃는 사진을 이력서에 써도 되나요?</td><td>이력서는 자유입니다. 입꼬리만 살짝 올린 정도가 무난합니다. 여권은 무표정이어야 합니다.</td></tr>
+    <tr><td>집에서는 라이트룸을 못 쓰는데요?</td><td>워크북 부록 C의 무료 루틴(외교부 도구 + Adobe Express + Gemini/ChatGPT)으로 같은 결과에 가깝게 만들 수 있습니다.</td></tr>
+    <tr><td>AI 프로필 앱 사진은 왜 안 되나요?</td><td>얼굴을 새로 그린 사진이라 실물과 다릅니다. SNS에는 써도 되지만 공식 서류에 쓰면 신뢰 문제가 생깁니다.</td></tr>
+    <tr><td>AI로 편집한 걸 회사가 알 수 있나요?</td><td>서비스가 넣은 워터마크나 콘텐츠 자격 증명이 파일에 남을 수 있습니다. 숨길 방법을 찾기보다 실물 범위로 보정하는 것이 답입니다.</td></tr>
+    <tr><td>인화는 어디서 하나요?</td><td>4×6인치 인화를 받는 사진관이나 온라인 인화 서비스에 인화판 JPG를 맡깁니다. 일반 프린터 출력은 여권에 쓸 수 없습니다.</td></tr>
+    <tr><td>안경을 써야 하는데 반사가 계속 생겨요</td><td>조명을 더 옆으로 옮기거나, 안경다리를 살짝 들어 렌즈를 아래로 기울입니다. 그래도 안 되면 벗고 찍는 것도 방법입니다.</td></tr>
+  </table>
+  <h2>개인정보·초상권 운영 원칙</h2>
+  <ul class="small">
+    <li>수강생 얼굴 사진은 <b>수업 목적 외에 사용하지 않습니다</b>. 화면 공유는 동의한 사람만 합니다.</li>
+    <li>강사 PC로 받은 수강생 파일은 2회차 종료 후 <b>바로 삭제</b>합니다.</li>
+    <li>기관계정 클라우드에 올라간 사진은 수강생이 직접 지우고, 강사가 마지막에 확인합니다.</li>
+    <li>센터 결과보고용 강의 사진은 뒷모습·화면 위주로 찍고, 얼굴이 나오면 동의서에 체크한 사람만 씁니다.</li>
+  </ul>
+</section>
+
+<!-- ═════════════ 부록 ═════════════ -->
+<section class="page">
+  <div class="part"><div class="num">+</div><div class="t"><small>부록</small><h1>서류 문안</h1></div></div>
+  <h2><span class="tag">A</span>강의계획서 ‘강의내용’ 수정 문안</h2>
+  <div class="card tint small">
+    스마트폰으로 직접 촬영한 사진을 AI 사진 편집 도구로 다듬어 실제 제출할 수 있는 증명사진과 이력서 사진을 완성하는 실습형 강의입니다. 1회차에는 외교부 여권 사진 규정(편집·AI 보정 불가)을 바탕으로 사진의 용도별 보정 기준을 익히고, 스마트폰 셀프 촬영과 규격 크롭으로 여권·신분증용 사진(3.5×4.5cm)을 만듭니다. 이어 어도비 라이트룸의 AI 기능(AI 노이즈 제거, 인물 자동 마스킹, 생성형 제거)으로 이력서 사진의 피부톤·조명·색감을 자연스럽게 보정합니다. 2회차에는 포토샵 생성형 AI로 이력서 사진의 배경 교체, 옷매무새 정리, 규격 크롭(3×4cm)을 진행하고, 같은 사진을 무료 AI 도구(Gemini, ChatGPT, Adobe Express 무료판)로 편집해 결과를 비교합니다. 끝으로 AI 편집 사진의 윤리와 관련 규정을 함께 다루며, 수강생 전원이 규격 사진 파일과 이력서 사진 파일을 가지고 돌아갑니다.
+  </div>
+
+  <h2><span class="tag">B</span>사진 촬영·활용 동의서 (예시)</h2>
+  <div class="card small" style="line-height:1.75">
+    <p><b>「AI로 완성하는 나의 증명사진 &amp; 이력서 사진」 수업 사진 촬영·활용 동의서</b></p>
+    <p>1. 수업 중 촬영하는 본인 얼굴 사진은 실습 목적으로만 사용하며, 강사는 수업 종료 후 강사 PC에 남은 사진을 삭제합니다.</p>
+    <p>2. 수업 중 본인 사진을 화면에 띄워 함께 보는 것에 &nbsp; ☐ 동의합니다 &nbsp; ☐ 동의하지 않습니다</p>
+    <p>3. 센터 결과보고용 수업 현장 사진에 본인 얼굴이 나오는 것에 &nbsp; ☐ 동의합니다 &nbsp; ☐ 동의하지 않습니다</p>
+    <p>4. 동의하지 않아도 수업 참여에는 아무런 불이익이 없으며, 강사가 제공하는 연습용 사진으로 실습할 수 있습니다.</p>
+    <div class="grid2" style="margin-top:4mm"><div>날짜: 2026년 12월 &nbsp;&nbsp;&nbsp; 일</div><div>성명: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (서명)</div></div>
+  </div>
+  <p class="xs">센터에 별도 동의서 양식이 있으면 그 양식을 우선합니다.</p>
+
+  <h2><span class="tag">C</span>근거 자료</h2>
+  <ul class="small">
+    <li>외교부 여권안내 「여권 사진」 — passport.go.kr (2022. 10. 개정 규격, 2026. 11. 확인)</li>
+    <li>「채용절차의 공정화에 관한 법률」 제4조의3 (출신지역 등 개인정보 요구 금지) — law.go.kr</li>
+    <li>「인공지능 발전과 신뢰 기반 조성 등에 관한 법률」 2026. 1. 22. 시행 — 생성형 AI 결과물 표시 의무는 AI 사업자에게 부과 (국민일보 2026. 1. 22. 등 보도)</li>
+    <li>Adobe 도움말 「생성형 채우기를 사용하여 이미지 편집」, 「생성형 AI를 사용하여 이미지 확장」 — helpx.adobe.com/kr</li>
+    <li>Adobe 「얼굴 부위 자동 감지 마스크로 인물 사진 보정」 — adobe.com/kr/learn</li>
+  </ul>
+</section>
+</body></html>
